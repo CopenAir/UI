@@ -8,8 +8,8 @@ int max(int a, int b) {
         return b;
 }
 
-// Draw a graph of the given float data
-// n is the number of elements in the data
+// Draw a graph of the given float array
+// n is the number of elements in the array
 // threshold is the value where the data starts to get red
 void draw_graph(float data[], int n, float threshold) {
     // copy and convert the data to integers so it can be used in the for loop,
@@ -46,7 +46,25 @@ void draw_graph(float data[], int n, float threshold) {
     for (int i = 0; i < n; i++)
         printf("════"); 
     printf("\n      ");
-    for (int i = 1; i <= n; i++)
-        printf(" %3d", i);
+    for (int i = 0; i < n;)
+        printf(" %3d", ++i);
     printf("\n"); 
+}
+
+// Displays the data for the given hour
+void hour_display(int year, int month, int day, int hour) {
+    float* data;
+    //data = request_data(year, month, day, hour);
+}
+
+// Displays data for the given day
+void day_display(int year, int month, int day) {
+    float* data;
+    //data = request_data(year, month, day)
+}
+
+// Displays data for the given month
+void month_display(int year, int month) {
+    float* data;
+    //data = request_data(year, month);
 }
