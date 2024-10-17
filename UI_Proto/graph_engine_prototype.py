@@ -30,23 +30,23 @@ class GraphEngine(object):
     def draw(self):
         print("Date: 17/10/2024 | Area: A.C.Meyers Vænge")
         print("Substance: PM2.5")
-        print("-----------------------------------------\n\n")
+        print("▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬\n")
         for i in range(self.ceiling, 0, -1):
             if i < 10:
                 if i >= 7:
-                    print(colorama.Fore.RED + f' {i}', end="|")
+                    print(colorama.Fore.RED + f' {i}', end="║ ")
                 else:
-                    print(colorama.Fore.GREEN + f' {i}', end="|")
+                    print(colorama.Fore.GREEN + f' {i}', end="║ ")
             else:
-                print(colorama.Fore.RED + f'{i}', end="|")
+                print(colorama.Fore.RED + f'{i}', end="║ ")
             for j in self.list1:
                 if j >= i:
-                    print("///", end=" ")
+                    print("███", end=" ")
                 else:
                     print("   ", end=" ")
             print("\n", end="")
-        print(colorama.Style.RESET_ALL + "  +-----------------------------------------------------------------------------------------------")
-        print("     1   2   3   4   5   6   7   8   9  10  11  12  13  14  15  16  17  18  19  20  21  22  23  24")
+        print(colorama.Style.RESET_ALL + "  ╚════════════════════════════════════════════════════════════════════════════════════════════════")
+        print("      1   2   3   4   5   6   7   8   9  10  11  12  13  14  15  16  17  18  19  20  21  22  23  24")
 
 
 if __name__ == "__main__":
