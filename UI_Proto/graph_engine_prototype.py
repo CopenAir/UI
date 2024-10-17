@@ -33,19 +33,19 @@ class GraphEngine(object):
         print("-----------------------------------------\n\n")
         for i in range(self.ceiling, 0, -1):
             if i < 10:
-                print(f' {i}', end="|")
+                if i >= 7:
+                    print(colorama.Fore.RED + f' {i}', end="|")
+                else:
+                    print(colorama.Fore.GREEN + f' {i}', end="|")
             else:
-                print(f'{i}', end="|")
+                print(colorama.Fore.RED + f'{i}', end="|")
             for j in self.list1:
                 if j >= i:
-                    if i >= 7:
-                        print(colorama.Fore.RED + "///", end=" " + colorama.Style.RESET_ALL)
-                    else:
-                        print(colorama.Fore.GREEN + "///", end=" " + colorama.Style.RESET_ALL)
+                    print("///", end=" ")
                 else:
                     print("   ", end=" ")
             print("\n", end="")
-        print("  +-----------------------------------------------------------------------------------------------")
+        print(colorama.Style.RESET_ALL + "  +-----------------------------------------------------------------------------------------------")
         print("     1   2   3   4   5   6   7   8   9  10  11  12  13  14  15  16  17  18  19  20  21  22  23  24")
 
 
