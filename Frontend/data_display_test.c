@@ -22,11 +22,15 @@ void draw_graph_test() {
 }
 
 void hour_display_test() {
-    // test here
+    char a[] = "A.C. Meyers";
+    char b[] = "2024-10-18";
+    hour_display(b, 2, a);
 }
 
 void day_display_test() {
-    // test here
+    char a[] = "A.C Meyer";
+    char b[] = "2024-10-18";
+    day_display(b, a);
 }
 
 void month_display_test() {
@@ -35,5 +39,7 @@ void month_display_test() {
 
 // Call tests in main function
 void main() {
-    draw_graph_test();
+    //draw_graph_test();
+    //hour_display_test();
+    day_display_test();
 }

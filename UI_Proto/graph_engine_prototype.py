@@ -14,9 +14,9 @@ def main():
 class GraphEngine(object):
     def __init__(self):
         colorama.init()
-        self.ceiling = 10
+        self.ceiling = 55
         # two lists with 24 random datapoints
-        self.list1 = [random.randint(1, self.ceiling) for _ in range(24)]
+        self.list1 = [26, 29, 29, 22, 17, 18, 25, 26, 31, 42, 42, 42, 55, 45, 45, 39, 35, 28, 25, 28, 24, 23, 26, 27]
         self.list2 = [random.randint(1, self.ceiling) for _ in range(24)]
 
         # calculate the median of each list
@@ -32,9 +32,9 @@ class GraphEngine(object):
         print("Substance: PM2.5")
         print("▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬\n")
         for i in range(self.ceiling, 0, -1):
-            if i < 10:
-                if i >= 7:
-                    print(colorama.Fore.RED + f' {i}', end="║ ")
+            if i < self.ceiling:
+                if i >= 10:
+                    print(colorama.Fore.RED + f'{i}', end="║ ")
                 else:
                     print(colorama.Fore.GREEN + f' {i}', end="║ ")
             else:
