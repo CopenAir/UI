@@ -8,7 +8,7 @@ void draw_graph_test() {
     for (int test = 0; test < 10; test++) {
         for (int i = 0; i < 24; i++)
             data[i] = ((float)(rand() % 200)) / 10; // random float between 0 and 20.0
-        draw_graph(data, 24, data[0]);
+        draw_graph(data, 24, WHO_24HOUR_PM2_5);
     }
     // Testing negative data and zero
     float new_data[2];
@@ -34,7 +34,7 @@ void month_display_test() {
 
 // Call tests in main function
 void main() {
-    draw_graph_test();
-    //hour_display_test();
+    //draw_graph_test();
+    hour_display_test();
     //day_display_test();
 }

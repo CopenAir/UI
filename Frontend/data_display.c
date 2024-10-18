@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include "constants.h"
 
 // Returns the maximum value of a and b
 int max(int a, int b) {
@@ -53,15 +54,28 @@ void draw_graph(float data[], int n, float threshold) {
     printf("\n"); 
 }
 
+// prints the rating in color based on data and threshold
+void print_rating(float data, int threshold) {
+    if (data < threshold / 2)
+        printf("\033[0;32m low\033[0m");
+    else if (data < threshold)
+        printf("\033[0;33m medium\033[0m");
+    else
+        printf("\033[0;31m high\033[0m");
+}
+
 // Draw the data in allignment
 void draw_data(float data[])
 {
     printf("---------------------------------------------\n\n");
-    printf("Substance   μg/m3\n\n");
-    printf("[%d]PM2.5: %5.1f\n", 1, data[0]);
-    printf("[%d]PM10:  %5.1f\n", 2, data[1]);
-    printf("[%d]NO2:   %5.1f\n", 3, data[2]);
-    printf("[%d]Temp:  %5.1f\n", 4, data[3]);   
+    printf("Substance  μg/m3  Rating\n\n");
+    printf("[%d]PM2.5:  %-4.1f  ", 1, data[0]);
+    print_rating(data[0], WHO_24HOUR_PM2_5);
+    printf("\n[%d]PM10:   %-4.1f  ", 2, data[1]);
+    print_rating(data[1], WHO_24HOUR_PM10);
+    printf("\n[%d]NO2:    %-4.1f  ", 3, data[2]);
+    print_rating(data[2], WHO_24HOUR_NO2);
+    printf("\n[%d]Temp:   %-4.1f   N/A\n", 4, data[3]);   
     printf("\n---------------------------------------------\n");
 }
 
@@ -85,7 +99,7 @@ void average(float** data, int n, float* avg) {
 // Displays the data for the given hour
 void hour_display(char* road, char* date, int hour) {
     printf("\033[H\033[J");  // ANSI escape code to clear the screen
-    float data[4] = {1, 2, 3, 4};
+    float data[4] = {10, 5, 25, 20};
 
     printf("%-20s%-20s%d:00\n", road, date, hour);
 
