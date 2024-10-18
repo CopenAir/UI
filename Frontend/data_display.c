@@ -1,0 +1,130 @@
+#include <stdio.h>
+
+// Returns the maximum value of a and b
+int max(int a, int b) {
+    if (a >= b) 
+        return a;
+    else 
+        return b;
+}
+
+// Draw a graph of the given float array
+// n is the number of elements in the array
+// threshold is the value where the data starts to get red
+void draw_graph(float data[], int n, float threshold) {
+    // copy and convert the data to integers so it can be used in the for loop,
+    // and get the maximum value to know how tall the graph should be
+    int data_as_int[n];
+    int mx = 0;
+    for (int i = 0; i < n; i++) {
+        data_as_int[i] = (int)(data[i] * 10);
+        mx = max(mx, data_as_int[i]);
+    }
+
+    // Draw graph from top left to bottom right
+    for (int i = mx; i > 0; i--) {
+        if (i > (threshold * 10)) {
+            printf("\033[0;31m"); // Switch print color to red
+            printf("%4.1f ║", ((float) i) / 10);
+        }
+        else {
+            printf("\033[0;32m"); // Switch print color to green
+            printf("%4.1f ║", ((float) i) / 10);
+        }
+        for (int j = 0; j < n; j++) {
+            if (data_as_int[j] >= i)
+                printf(" ###");
+            else
+                printf("    ");
+        }
+        printf("\n");
+    }
+
+    // Draw the bottom line and numbers
+    printf("\033[0m"); // Reset print color
+    printf("     ╚═");
+    for (int i = 0; i < n; i++)
+        printf("════"); 
+    printf("\n      ");
+    for (int i = 0; i < n;)
+        printf(" %3d", ++i);
+    printf("\n"); 
+}
+
+void display(float data[])
+{
+    printf("--------------------------------------------\n");
+    char pm25[] = "PM2.5:";
+    char pm10[] = "PM10: ";
+    char no2[] = "NO2:  ";
+    char temp[] = "Temp: ";
+    printf("%s %5.1f\n", pm25, data[0]);
+    printf("%s %5.1f\n", pm10, data[1]);
+    printf("%s %5.1f\n", no2, data[2]);
+    printf("%s %5.1f\n", temp, data[3]);   
+    printf("--------------------------------------------\n");
+}
+
+void average(float** data, int n, float* avg)
+{
+    float pm25_total = 0, pm10_total = 0, no2_total = 0, temp_total = 0;
+
+    for (int i = 0; i < n; i++)
+    {
+        pm25_total += data[i][1];
+        pm10_total += data[i][2];
+        no2_total += data[i][3];
+        temp_total += data[i][4];
+    }
+
+    avg[0] = pm25_total / n;
+    avg[1] = pm10_total / n;
+    avg[2] = no2_total / n;
+    avg[3] = temp_total / n;
+    
+}
+
+// Displays the data for the given hour
+void hour_display(char* date, int hour, char road[]) {
+    float* data;
+    //data = request_data(year, month, day, hour);
+
+    printf("%s\n", road);
+    printf("Hourview         ");
+    printf("%s %10d:00\n", date, hour);
+
+
+    float a[] = {1, 2, 3, 4};
+    display(a);
+}
+
+// Displays data for the given day
+void day_display(char* date, char road[]) {
+    float* a[5];
+    float b[5] = {1 ,2 ,3 ,4 ,5};
+    float c[5] = {5, 4, 3, 2, 1}; 
+
+    a[0] = b;
+    a[1] = c;
+    a[2] = c;
+    a[3] = b;
+    a[4] = b;
+
+    float avg[4];
+
+    average(a, 5, avg);
+
+    printf("%s\n", road);
+    printf("Day average                       %s \n", date);
+
+    display(avg);
+
+}
+
+// Displays data for the given month
+void month_displayi(char* date) {
+    float* data;
+    //data = request_data(year, month);
+}
+
+
