@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include "constants.h"
 
-// Returns the maximum value of a and b
 int max(int a, int b) {
     if (a >= b) 
         return a;
@@ -54,7 +53,7 @@ void draw_graph(float data[], int n, float threshold) {
     printf("\n"); 
 }
 
-// prints the rating in color based on data and threshold
+// prints the rating in different color based on data and threshold
 void print_rating(float data, int threshold) {
     if (data < threshold / 2)
         printf("\033[0;32m low\033[0m");
@@ -64,22 +63,20 @@ void print_rating(float data, int threshold) {
         printf("\033[0;31m high\033[0m");
 }
 
-// Draw the data in allignment
-void draw_data(float data[])
-{
+void draw_data(float data[]) {
     printf("---------------------------------------------\n\n");
-    printf("Substance  μg/m3  Rating\n\n");
-    printf("[%d]PM2.5:  %-4.1f  ", 1, data[0]);
+    printf("Substance  Data       Rating\n\n");
+    printf("[%d]PM2.5:  %-4.1f %-5s", 1, data[0], "μg/m3");
     print_rating(data[0], WHO_24HOUR_PM2_5);
-    printf("\n[%d]PM10:   %-4.1f  ", 2, data[1]);
+    printf("\n[%d]PM10:   %-4.1f %-5s", 2, data[1], "μg/m3");
     print_rating(data[1], WHO_24HOUR_PM10);
-    printf("\n[%d]NO2:    %-4.1f  ", 3, data[2]);
+    printf("\n[%d]NO2:    %-4.1f %-5s", 3, data[2], "μg/m3");
     print_rating(data[2], WHO_24HOUR_NO2);
-    printf("\n[%d]Temp:   %-4.1f   N/A\n", 4, data[3]);   
+    printf("\n[%d]Temp:   %-4.1f %-5s  N/A\n", 4, data[3], "°C");   
     printf("\n---------------------------------------------\n");
 }
 
-// Calculates the averages of the given data set
+// Calculates the averages of the given data sets into avg
 void average(float** data, int n, float* avg) {
     float pm25_sum = 0, pm10_sum = 0, no2_sum = 0, temp_sum = 0;
 
@@ -96,7 +93,6 @@ void average(float** data, int n, float* avg) {
     avg[3] = temp_sum / n; 
 }
 
-// Displays the data for the given hour
 void hour_display(char* road, char* date, int hour) {
     printf("\033[H\033[J");  // ANSI escape code to clear the screen
     float data[4] = {10, 5, 25, 20};
@@ -106,7 +102,6 @@ void hour_display(char* road, char* date, int hour) {
     draw_data(data);
 }
 
-// Displays data for the given day
 void day_display(char* road, char* date) {
     printf("\033[H\033[J");  // ANSI escape code to clear the screen
     float* data[4];
@@ -126,7 +121,6 @@ void day_display(char* road, char* date) {
     draw_data(avg);
 }
 
-// Displays data for the given month
 void month_display(char* road, char* date) {
     // todo
 }
