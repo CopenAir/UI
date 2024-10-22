@@ -33,6 +33,7 @@ int main() {
 }
 
 int load_data(char *filename, double data_matrix[][MAX_ROWS]) {
+    char delimiter = ',';
     FILE *data = fopen(filename, "r");
     if (data == NULL) {
         return -1; 
@@ -42,7 +43,7 @@ int load_data(char *filename, double data_matrix[][MAX_ROWS]) {
     int row = 0;
 
     while (fgets(line, sizeof(line), data)) {
-        char *value = strtok(line, ",");
+        char *value = strtok(line, &delimiter);
         for (int col = 0; col < MAX_COLUMNS; col++) {
             if (value != NULL) {
                 data_matrix[col][row] = atof(value);
