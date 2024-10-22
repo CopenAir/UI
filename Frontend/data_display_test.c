@@ -32,9 +32,9 @@ void month_display_test() {
     // test here
 }
 
-// Call tests in main function
+// Call test functions here
 void main() {
     //draw_graph_test();
-    hour_display_test();
-    //day_display_test();
+    //hour_display_test();
+    day_display_test();
 }
