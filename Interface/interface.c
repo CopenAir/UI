@@ -3,7 +3,6 @@
 #include <string.h>
 
 // View the readme.md for a guide on how to add stuff in here
-// TODO: We dont use the "allow_arguments" at the moment, idk if we need it i dont have more time rn so ill look into it later
 
 // Emums -------------------------------------------------------------
 
@@ -24,32 +23,24 @@ typedef enum {
     SCREEN_GRAPH
 } Screen;
 
-// Enum for booleans cus C doesnt have these for some reason >:(
-typedef enum {
-    FALSE,
-    TRUE
-} Bool;
-
-
 // Structs ------------------------------------------------------------------------
 
 // Struct for each command entry
 struct command_entry {
     char* command_string;
     Command_id command_id;
-    Bool allow_argument;
 };
 
 // Lookup table for storing the command entries
 struct command_entry command_table[] = {
-        {"quit", CMD_QUIT, FALSE},
-        {"q", CMD_QUIT, FALSE},
-        {"help", CMD_HELP, FALSE},
-        {"h", CMD_HELP, FALSE},
-        {"reset", CMD_RESET, FALSE},
-        {"r", CMD_RESET, FALSE},
-        {"location", CMD_LOCATION, FALSE},
-        {"arg_test", CMD_ARG_TEST, TRUE},
+        {"quit", CMD_QUIT},
+        {"q", CMD_QUIT},
+        {"help", CMD_HELP},
+        {"h", CMD_HELP},
+        {"reset", CMD_RESET},
+        {"r", CMD_RESET},
+        {"location", CMD_LOCATION},
+        {"arg_test", CMD_ARG_TEST},
 };
 
 // Struct for handling the entered command
