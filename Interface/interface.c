@@ -64,14 +64,18 @@ int main( )
     while(current_screen > 0) {
         int command_id;
 
-        clear_terminal(); // Clears terminal
+        clear_terminal();
 
-        // Displays the screen based on its id (could refactor into its own function)
+        // Displays the screen based on its id
         display_screen(current_screen);
 
+        // Gets input
         char *user_input = get_input();
 
+        // Gets command based on input
         command_id = get_command(user_input);
+
+        // Executes the command
         execute_command(command_id, &current_screen);
 
         free(user_input);
@@ -80,6 +84,7 @@ int main( )
     return 0;
 }
 
+// Displays a screen based on the id of the current screen using a switch statement
 void display_screen(int current_screen) {
     switch (current_screen) {
         case SCREEN_MAIN:
@@ -100,7 +105,13 @@ void display_screen(int current_screen) {
 char* get_input() {
     char *input = malloc(50);
     printf("Enter Command:");
-    scanf("%s", input);
+
+    // Using fgets instead of scanf to prevent input overflow.
+    fgets(input, 50, stdin);
+
+    // Removes the newline at the end of the string (cus fgets includes that).
+    // strcspn returns how many characters there are before a newline is encountered. This number is also the placement of the newline, which then gets set to null.
+    input[strcspn(input, "\n")] = '\0';
 
     return input;
 }
@@ -119,19 +130,16 @@ int get_command(char *command_string) {
     return command_id;
 }
 
-// Executes a command based on its id
+// Executes a command based on its id using a switch statement
 void execute_command(int command_id, int *screen_id) {
     switch (command_id) {
         case CMD_QUIT:
-            printf("command_quit\n");
             command_quit(screen_id);
             break;
         case CMD_HELP:
-            printf("help\n");
             command_help(screen_id);
             break;
         case CMD_RESET:
-            printf("reset\n");
             command_reset(screen_id);
             break;
         case CMD_LOCATION:
