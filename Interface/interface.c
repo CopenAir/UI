@@ -146,6 +146,9 @@ struct entered_command get_command(char *input_string) {
         // Copies the command part of the input to command_string. The length of the command part is calculated by subtracting the input_string pointer from space_pointer.
         strncpy(command_string, input_string, space_pointer - input_string);
 
+        // Adds a null terminator to the end of command_string, as otherwise the string isnt stringing.
+        command_string[space_pointer - input_string] = '\0';
+
         // Copies the argument part of the input to argument_string (not including the space)
         strcpy(argument_string, space_pointer + 1);
     } else {
