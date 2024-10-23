@@ -1,12 +1,24 @@
+/*  Backend CSV matrix loader
+    21/10/2024 @ 11:24
+    csv.c V1.2
+    
+    Sebastian Lindau-Skands & Fabian Loki */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
-int load_data(char *filename, double data_matrix[][8785]);
+#define MAX_LINE_LENGTH 1024
+#define MAX_COLUMNS 5
+#define MAX_ROWS 8785
+
+/* Function to load data from a CSV file into a 2D matrix of doubles */
+
+int load_data(char *filename, double data_matrix[][MAX_ROWS]);
 
 int main() {
-    double data_matrix[5][8785];
-    char *filename = "data.csv";
+    double data_matrix[MAX_COLUMNS][MAX_ROWS];
+    char *filename = "folehaven.csv";
 
     switch(load_data(filename, data_matrix)) {
         case -1:
@@ -20,18 +32,19 @@ int main() {
     return 0; 
 }
 
-int load_data(char *filename, double data_matrix[][8785]) {
+int load_data(char *filename, double data_matrix[][MAX_ROWS]) {
+    char delimiter = ',';
     FILE *data = fopen(filename, "r");
     if (data == NULL) {
-        return -1;
+        return -1; 
     }
 
-    char *headers[] = {"Time", "PM2", "PM10", "NO2", "TEMP"}; // Declare and initialize headers array
-    char line[1024];
+    char line[MAX_LINE_LENGTH];
     int row = 0;
+
     while (fgets(line, sizeof(line), data)) {
-        char *value = strtok(line, ",");
-        for (int col = 0; col < 5; col++) {
+        char *value = strtok(line, &delimiter);
+        for (int col = 0; col < MAX_COLUMNS; col++) {
             if (value != NULL) {
                 data_matrix[col][row] = atof(value);
             }
