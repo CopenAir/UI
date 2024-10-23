@@ -3,7 +3,7 @@
 #include <string.h>
 
 // View the readme.md for a guide on how to add stuff in here
-
+// TODO: We dont use the "allow_arguments" at the moment, idk if we need it i dont have more time rn so ill look into it later
 
 // Emums -------------------------------------------------------------
 
