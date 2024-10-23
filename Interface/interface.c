@@ -50,7 +50,7 @@ struct entered_command {
 };
 
 
-// Function Declarations -------------------------------------------------------------
+// Function Prototypes -------------------------------------------------------------
 
 // Main functions
 char* get_input();
@@ -70,6 +70,8 @@ void screen_main();
 
 // Helper functions
 void clear_terminal();
+
+// Main Functions -----------------------------------------------------------------------
 
 int main( )
 {
