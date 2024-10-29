@@ -77,7 +77,7 @@ void clear_terminal();
 
 int main( )
 {
-    int current_screen = SCREEN_MAIN;
+    int current_screen = SCREEN_MAIN;
 
     while(current_screen > 0) {
         struct entered_command entered_command;
