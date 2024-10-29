@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <time.h>
 
 // WHO guidelines for air pollution from 2021 
 // https://www.who.int/news-room/feature-stories/detail/what-are-the-who-air-quality-guidelines
@@ -77,14 +78,30 @@ void average(float** data, int n, float* avg) {
     avg[3] = temp_sum / n; 
 }
 
-void hour_display(char* road, char* date, int hour) {
+void unix_to_date(time_t unix_time, char* date) {
+    struct tm* time_info = localtime(&unix_time);
+    strftime(date, 20, "%Y-%m-%d", time_info);
+}
+
+void unix_to_hour(time_t unix_time, char* hour) {
+    struct tm* time_info = localtime(&unix_time);
+    strftime(hour, 10, "%H", time_info);
+}
+
+void hour_display(char* road, time_t unix_time) {
     printf("\033[H\033[J");  // ANSI escape code to clear the screen
     float data[4] = {10, 5, 25, 20};
 
-    printf("%-20s%-20s%d:00\n", road, date, hour);
+    char date[20];
+    char hour[2];
+    unix_to_date(unix_time, date);
+    unix_to_hour(unix_time, hour);
+
+
+    printf("%-20s%-20s%-20s:00\n", road, date, hour);
 }
 
-void day_display(char* road, char* date) {
+void day_display(char* road, time_t unix_time) {
     printf("\033[H\033[J");  // ANSI escape code to clear the screen
     float* data[4];
     float a[5] = {1 ,2 ,3 ,4 ,5};
@@ -98,12 +115,14 @@ void day_display(char* road, char* date) {
     float avg[4];
     average(data, 4, avg);
 
+    char date[20];
+    unix_to_date(unix_time, date);
     printf("%-35s%s\n", road, date);
 
     print_data(avg);
 }
 
-void month_display(char* road, char* date) {
+void month_display(char* road, time_t unix_time) {
     //needs adaptation
     printf("\033[H\033[J");  // ANSI escape code to clear the screen
     float* data[4];
@@ -118,7 +137,10 @@ void month_display(char* road, char* date) {
     float avg[4];
     average(data, 4, avg);
 
+    char date[20];
+    unix_to_date(unix_time, date);
     printf("%-35s%s\n", road, date);
 
     print_data(avg);
 }
+
