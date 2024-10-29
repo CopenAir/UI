@@ -12,26 +12,6 @@
 #define MAX_COLUMNS 5
 #define MAX_ROWS 8785
 
-/* Function to load data from a CSV file into a 2D matrix of doubles */
-
-int load_data(char *filename, double data_matrix[][MAX_ROWS]);
-
-int main() {
-    double data_matrix[MAX_COLUMNS][MAX_ROWS];
-    char *filename = "folehaven.csv";
-
-    switch(load_data(filename, data_matrix)) {
-        case -1:
-            printf("Error opening file %s\n", filename);
-            return -1;
-        default:
-            printf("Data loaded successfully\n");
-            break;
-    }
-
-    return 0; 
-}
-
 int load_data(char *filename, double data_matrix[][MAX_ROWS]) {
     char delimiter = ',';
     FILE *data = fopen(filename, "r");
