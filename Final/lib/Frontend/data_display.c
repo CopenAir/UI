@@ -10,7 +10,7 @@
 #define WHO_ANNUAL_NO2 10
 #define WHO_24HOUR_NO2 25
 
-void draw_graph(int size, float *a, float max_val, float threshold) {
+void draw_graph(int size, float *data, float max_val, float threshold) {
     //size = size of x-axis
     //*a = float array with data points
     //max_val = maximum value in the data points
@@ -25,7 +25,7 @@ void draw_graph(int size, float *a, float max_val, float threshold) {
         printf("%s%.1f║", i <= threshold ? "\x1b[32m" : "\x1b[31m", i);
         for (int j = 0; j < size; j++) {
             //printf statement with ternary operator inside. Essentially an if statement that returns the appropriate thing to be printed
-            printf("%s", a[j] >= i ? "███ " : "    ");
+            printf("%s", data[j] >= i ? "███ " : "    ");
         }
         printf("\n\x1b[0m");
     }
@@ -40,12 +40,10 @@ void draw_graph(int size, float *a, float max_val, float threshold) {
 
 // prints the rating in different color based on data and threshold
 void print_rating(float data, int threshold) {
-    if (data < threshold / 2)
-        printf("\033[0;32m low\033[0m");
-    else if (data < threshold)
-        printf("\033[0;33m medium\033[0m");
+    if (data < threshold)
+        printf("\033[0;32m within tolerances\033[0m");
     else
-        printf("\033[0;31m high\033[0m");
+        printf("\033[0;31m outside tolerances\033[0m");
 }
 
 void print_data(float data[]) {
