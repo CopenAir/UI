@@ -25,12 +25,23 @@ typedef enum {
     SCREEN_GRAPH
 } Screen;
 
+// Enum for locations
+typedef enum {
+    FOLEHAVEN,
+} Location;
+
 // Structs ------------------------------------------------------------------------
 
 // Struct for each command entry
 struct command_entry {
     char* command_string;
     Command_id command_id;
+};
+
+// Struct for location entries
+struct location_entry {
+    char* filename;
+    Location location_id;
 };
 
 // Lookup table for storing the command entries
@@ -43,6 +54,10 @@ struct command_entry command_table[] = {
         {"r", CMD_RESET},
         {"location", CMD_LOCATION},
         {"arg_test", CMD_ARG_TEST},
+};
+
+struct location_entry location_table[] = {
+        {"../data/Folehaven.csv", FOLEHAVEN},
 };
 
 // Struct for handling the entered command
@@ -58,17 +73,19 @@ struct entered_command {
 char* get_input();
 struct entered_command get_command(char *input_string);
 void execute_command(struct entered_command entered_command, int *screen_id);
-void display_screen(int current_screen);
+void display_screen(Screen current_screen, Location current_location, int current_date);
 
 // Command functions
 void command_quit(int *screen_id);
 void command_help(int *screen_id);
 void command_reset(int *screen_id);
 void command_arg_test(char* argument);
+void command_location(int *screen_id);
 
 // Screen functions
 void screen_help();
 void screen_main();
+void screen_data(int location_id, int date);
 
 // Helper functions
 void clear_terminal();
@@ -77,14 +94,16 @@ void clear_terminal();
 
 int main( )
 {
-    int current_screen = SCREEN_MAIN;
+    Screen current_screen = SCREEN_MAIN;
+    int current_date = 1728932400; // TODO: might want to do this dynamically instead
+    Location current_location = FOLEHAVEN;
 
     while(current_screen > 0) {
         struct entered_command entered_command;
 
         clear_terminal();
 
-        display_screen(current_screen);
+        display_screen(current_screen, current_location, current_date);
 
         char *user_input = get_input();
         entered_command = get_command(user_input);
@@ -97,7 +116,7 @@ int main( )
 }
 
 // Displays a screen based on the id of the current screen using a switch statement
-void display_screen(int current_screen) {
+void display_screen(Screen current_screen, Location current_location, int current_date) {
     switch (current_screen) {
         case SCREEN_MAIN:
             screen_main();
@@ -106,7 +125,7 @@ void display_screen(int current_screen) {
             screen_help();
             break;
         case SCREEN_DATA:
-            // TODO
+            screen_data(current_location, current_date);
             break;
         default:
             printf("Error");
@@ -176,8 +195,7 @@ void execute_command(struct entered_command entered_command, int *screen_id) {
             command_reset(screen_id);
             break;
         case CMD_LOCATION:
-            printf("location\n");
-            // TODO
+            command_location(screen_id);
             break;
         case CMD_ARG_TEST:
             command_arg_test(entered_command.argument);
@@ -190,7 +208,7 @@ void execute_command(struct entered_command entered_command, int *screen_id) {
 // Commands ---------------------------------------------------------
 
 void command_help(int *screen_id) {
-    *screen_id = 2;
+    *screen_id = SCREEN_HELP;
 }
 
 void command_quit(int *screen_id) {
@@ -198,7 +216,11 @@ void command_quit(int *screen_id) {
 }
 
 void command_reset(int *screen_id) {
-    *screen_id = 1;
+    *screen_id = SCREEN_MAIN;
+}
+
+void command_location(int *screen_id) {
+    *screen_id = SCREEN_DATA;
 }
 
 void command_arg_test(char* argument) {
@@ -222,6 +244,27 @@ void screen_help() {
     printf("  r or reset - Resets program back to original state\n");
     printf("  \n");
     printf("  \n");
+}
+
+void screen_data(int location_id, int date) {
+    char *filename;
+
+    for (int i = 0; i < sizeof (location_table) / sizeof (location_table[0]); i++) {
+        if (location_id == location_table[i].location_id) {
+            filename = location_table[i].filename;
+            break;
+        }
+
+        filename = "Error";
+    }
+
+    float data[5];
+
+    if (get_data_for_date(filename, data, date) == -1) {
+        printf("Horrible error happened :pensive:\n");
+    }
+
+    print_data(data);
 }
 
 // Helper functions ----------------------------------------

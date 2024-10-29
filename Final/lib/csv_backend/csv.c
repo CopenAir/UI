@@ -12,7 +12,7 @@
 #define MAX_COLUMNS 5
 #define MAX_ROWS 8785
 
-int load_data(char *filename, double data_matrix[][MAX_ROWS]) {
+int load_data(char *filename, float data_matrix[][MAX_ROWS]) {
     char delimiter = ',';
     FILE *data = fopen(filename, "r");
     if (data == NULL) {
@@ -34,6 +34,27 @@ int load_data(char *filename, double data_matrix[][MAX_ROWS]) {
     }
 
     fclose(data);
+
+    return 0;
+}
+
+int get_data_for_date(char *filename, float data_array[], int date) {
+    float location_data[5][MAX_ROWS];
+
+    if (load_data(filename, location_data) == -1) {
+        return -1;
+    }
+
+    for (int i = 0; i < MAX_ROWS; i++) {
+        if (location_data[0][i] == date) {
+            // When the date is found, extract the data for that date
+            for (int j = 0; j < 5; j++) {
+                data_array[j] = location_data[j][i];
+            }
+
+            break;
+        }
+    }
 
     return 0;
 }
