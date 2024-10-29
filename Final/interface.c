@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "lib/csv_backend/csv.h"
+#include "lib/Frontend/data_display.h"
 
 // View the readme.md for a guide on how to add stuff in here
 

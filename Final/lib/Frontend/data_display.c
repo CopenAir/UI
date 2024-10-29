@@ -9,13 +9,19 @@
 #define WHO_ANNUAL_NO2 10
 #define WHO_24HOUR_NO2 25
 
-void draw_graph(int size, float *a, int max_val, int threshold) {
+void draw_graph(int size, float *a, float max_val, float threshold) {
+    //size = size of x-axis
+    //*a = float array with data points
+    //max_val = maximum value in the data points
+    //threshold = value to use as a threshold for the bar chart
+
     /*  \x1b[ = how to define colour
         31m=red
         32m=green*/
-    for (int i = max_val; i > 0; i--) {
+
+    for (float i = max_val; i > 0; i -= 0.1) {
         //printf statement with ternary operator inside. Essentially an if statement that returns the appropriate colour value
-        printf("%s%2d║", i < threshold ? "\x1b[32m" : "\x1b[31m", i);
+        printf("%s%.1f║", i <= threshold ? "\x1b[32m" : "\x1b[31m", i);
         for (int j = 0; j < size; j++) {
             //printf statement with ternary operator inside. Essentially an if statement that returns the appropriate thing to be printed
             printf("%s", a[j] >= i ? "███ " : "    ");
@@ -23,12 +29,12 @@ void draw_graph(int size, float *a, int max_val, int threshold) {
         printf("\n\x1b[0m");
     }
 
-    printf("  ╚");
+    printf("   ╚");
     for (int i = 0; i < size; i++) {
         printf("════");
     }
-    printf("\n  ");
-    for (int i = 1; i <= size; printf("%4d", i++));
+    printf("\n     ");
+    for (int i = 1; i <= size; printf("%d   ", i++));
 }
 
 // prints the rating in different color based on data and threshold
