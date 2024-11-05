@@ -60,8 +60,8 @@ struct command_entry command_table[] = {
 
 struct location_entry location_table[] = {
         {"../data/Folehaven.csv", FOLEHAVEN},
-        {"../data/backersvej.cvs", BACKERSVEJ},
-        {"../data/hillerødsgade.cvs", HILLEROESGADE},
+        {"../data/backersvej.csv", BACKERSVEJ},
+        {"../data/hilleroedsgade.csv", HILLEROESGADE},
 };
 
 // Struct for handling the entered command
@@ -113,7 +113,7 @@ int main( )
         entered_command = get_command(user_input);
         execute_command(entered_command, &current_screen);
 
-        free(user_input);
+        (user_input);
     }
 
     return 0;
