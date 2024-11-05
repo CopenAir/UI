@@ -27,7 +27,7 @@ typedef enum {
 
 // Enum for locations
 typedef enum {
-    FOLEHAVEN,
+    FOLEHAVEN = 1,
     BACKERSVEJ,
     HILLEROESGADE,
 } Location;
@@ -76,7 +76,7 @@ struct entered_command {
 // Main functions
 char* get_input();
 struct entered_command get_command(char *input_string);
-void execute_command(struct entered_command entered_command, int *screen_id);
+void execute_command(struct entered_command entered_command, int *screen_id, Location *current_location);
 void display_screen(Screen current_screen, Location current_location, int current_date);
 
 // Command functions
@@ -84,12 +84,12 @@ void command_quit(int *screen_id);
 void command_help(int *screen_id);
 void command_reset(int *screen_id);
 void command_arg_test(char* argument);
-void command_location(int *screen_id);
+void command_location(int *screen_id, Location *current_location);
 
 // Screen functions
 void screen_help();
 void screen_main();
-void screen_data(int location_id, int date);
+void screen_data(Location location_id, int date);
 
 // Helper functions
 void clear_terminal();
@@ -111,7 +111,7 @@ int main( )
 
         char *user_input = get_input();
         entered_command = get_command(user_input);
-        execute_command(entered_command, &current_screen);
+        execute_command(entered_command, &current_screen, &current_location);
 
         (user_input);
     }
@@ -187,7 +187,7 @@ struct entered_command get_command(char *input_string) {
 }
 
 // Executes a command based on its id using a switch statement
-void execute_command(struct entered_command entered_command, int *screen_id) {
+void execute_command(struct entered_command entered_command, int *screen_id, Location *current_location) {
     switch (entered_command.command_id) {
         case CMD_QUIT:
             command_quit(screen_id);
@@ -199,7 +199,7 @@ void execute_command(struct entered_command entered_command, int *screen_id) {
             command_reset(screen_id);
             break;
         case CMD_LOCATION:
-            command_location(screen_id);
+            command_location(screen_id, current_location);
             break;
         case CMD_ARG_TEST:
             command_arg_test(entered_command.argument);
@@ -223,7 +223,23 @@ void command_reset(int *screen_id) {
     *screen_id = SCREEN_MAIN;
 }
 
-void command_location(int *screen_id) {
+void command_location(int *screen_id, Location *current_location) {
+    clear_terminal();
+    printf("Select Location:\n");
+    printf("_____________________________________________\n");
+    printf(" [1] Folehaven\n");
+    printf(" [2] Backersvej\n");
+    printf(" [3] Hillerrødsgade\n");
+    printf("______________________________________________\n");
+    printf("Enter Number: ");
+
+    Location new_location = -1;
+    while (new_location >= 3 || new_location <= 0) {
+        scanf("%i", &new_location);
+    };
+
+    *current_location = new_location;
+
     *screen_id = SCREEN_DATA;
 }
 
@@ -250,22 +266,20 @@ void screen_help() {
     printf("  \n");
 }
 
-void screen_data(int location_id, int date) {
-    char *filename;
+void screen_data(Location location_id, int date) {
+    char *filename = "none";
 
     for (int i = 0; i < sizeof (location_table) / sizeof (location_table[0]); i++) {
         if (location_id == location_table[i].location_id) {
             filename = location_table[i].filename;
             break;
         }
-
-        filename = "Error";
     }
 
     float data[5];
 
     if (get_data_for_date(filename, data, date) == -1) {
-        printf("Horrible error happened :pensive:\n");
+        printf("Horrible error happened :pensive:\nSelected File: %s\n", filename);
     }
 
     print_data(data);
