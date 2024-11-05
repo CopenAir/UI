@@ -57,7 +57,7 @@ struct command_entry command_table[] = {
 };
 
 struct location_entry location_table[] = {
-        {"../data/Folehaven.csv", FOLEHAVEN},
+        {"../data/folehaven.csv", FOLEHAVEN},
 };
 
 // Struct for handling the entered command
@@ -134,7 +134,7 @@ void display_screen(Screen current_screen, Location current_location, int curren
 
 // Gets the input of the user
 char* get_input() {
-    char *input = malloc(50);
+    char *input = malloc(50); //freed correctly
     printf("Enter Command:");
 
     // Using fgets instead of scanf to prevent input overflow.
@@ -224,14 +224,14 @@ void command_location(int *screen_id) {
 }
 
 void command_arg_test(char* argument) {
-    printf("You entered argument: %s\nEnter any key to continue:", argument);
+    printf("You entered argument: %s\nPress any key to continue:", argument);
     fgets(argument, 10, stdin);
 }
 
 // Screens -----------------------------------------------------------------
 
 void screen_main() {
-    printf("welcome\n\n");
+    printf("Welcome\n\n");
     printf("Enter help for help\n");
     printf("Enter quit to quit\n");
     printf("--------------------------------------\n");

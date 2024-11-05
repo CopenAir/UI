@@ -11,14 +11,14 @@
 #define WHO_24HOUR_NO2 25
 
 void draw_graph(int size, float *data, float max_val, float threshold) {
-    //size = size of x-axis
-    //*a = float array with data points
-    //max_val = maximum value in the data points
-    //threshold = value to use as a threshold for the bar chart
+    /*  size = size of x-axis
+        *a = float array with data points
+        max_val = maximum value in the data points
+        threshold = value to use as a threshold for the bar chart
 
-    /*  \x1b[ = how to define colour
+        \x1b[ = how to define colour
         31m=red
-        32m=green*/
+        32m=green */
 
     for (float i = max_val; i > 0; i -= 0.1) {
         //printf statement with ternary operator inside. Essentially an if statement that returns the appropriate colour value
