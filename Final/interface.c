@@ -28,6 +28,8 @@ typedef enum {
 // Enum for locations
 typedef enum {
     FOLEHAVEN,
+    BACKERSVEJ,
+    HILLEROESGADE,
 } Location;
 
 // Structs ------------------------------------------------------------------------
@@ -58,6 +60,8 @@ struct command_entry command_table[] = {
 
 struct location_entry location_table[] = {
         {"../data/Folehaven.csv", FOLEHAVEN},
+        {"../data/backersvej.cvs", BACKERSVEJ},
+        {"../data/hillerødsgade.cvs", HILLEROESGADE},
 };
 
 // Struct for handling the entered command
