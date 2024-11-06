@@ -269,7 +269,7 @@ void command_arg_test(char* argument) {
     fgets(argument, 10, stdin);
 }
 
-// Lot of repetition from command_location, could possible shorten it by making a helper function
+//TODO: Lot of repetition from command_location, could possible shorten it by making a helper function
 void command_graph(Screen *screen_id, Measurement_type *current_measurement) {
     clear_terminal();
     printf("Select measurement type:\n");
@@ -329,7 +329,7 @@ void screen_data(Location location_id, int date) {
     print_data(data);
 }
 
-// Lot of repetition from screen_data, could shorten it by having a helper function
+//TODO: Lot of repetition from screen_data, could shorten it by having a helper function
 void screen_graph(Location location_id, Measurement_type measurement) {
     char *filename = "none";
 
