@@ -47,19 +47,19 @@ void print_data(float data[]) {
     printf("---------------------------------------------\n");
     printf(" %-10s %-10s %-10s\n", "Substance", "Data", "Rating");
     printf("---------------------------------------------\n");
-    printf("[%d]PM2.5:  %-4.1f %-5s", 1, data[0], "μg/m3");
-    print_rating(data[0], WHO_24HOUR_PM2_5);
+    printf("[%d]PM2.5:  %-4.1f %-5s", 1, data[1], "μg/m3");
+    print_rating(data[1], WHO_24HOUR_PM2_5);
     printf("\n");
 
-    printf("[%d]PM10:   %-4.1f %-5s", 2, data[1], "μg/m3");
-    print_rating(data[1], WHO_24HOUR_PM10);
+    printf("[%d]PM10:   %-4.1f %-5s", 2, data[2], "μg/m3");
+    print_rating(data[2], WHO_24HOUR_PM10);
     printf("\n");
 
-    printf("[%d]NO2:    %-4.1f %-5s", 3, data[2], "μg/m3");
-    print_rating(data[2], WHO_24HOUR_NO2);
+    printf("[%d]NO2:    %-4.1f %-5s", 3, data[3], "μg/m3");
+    print_rating(data[3], WHO_24HOUR_NO2);
     printf("\n");
 
-    printf("[%d]Temp:   %-4.1f %-5s  N/A\n", 4, data[3], "°C");   
+    printf("[%d]Temp:   %-4.1f %-5s  N/A\n", 4, data[4], "°C");
     printf("---------------------------------------------\n");
 }
 

@@ -15,6 +15,7 @@ typedef enum {
     CMD_RESET,
     CMD_LOCATION,
     CMD_ARG_TEST,
+    CMD_GRAPH
 } Command_id;
 
 // Enum for screen id's
@@ -30,7 +31,14 @@ typedef enum {
     FOLEHAVEN = 1,
     BACKERSVEJ,
     HILLEROESGADE,
+    LAST_LOCATION = HILLEROESGADE,
 } Location;
+
+typedef enum {
+    PM2_5,
+    PM10,
+    NO2,
+} Measurement_type;
 
 // Structs ------------------------------------------------------------------------
 
@@ -56,6 +64,7 @@ struct command_entry command_table[] = {
         {"r", CMD_RESET},
         {"location", CMD_LOCATION},
         {"arg_test", CMD_ARG_TEST},
+        {"graph", CMD_GRAPH}
 };
 
 struct location_entry location_table[] = {
@@ -76,23 +85,26 @@ struct entered_command {
 // Main functions
 char* get_input();
 struct entered_command get_command(char *input_string);
-void execute_command(struct entered_command entered_command, int *screen_id, Location *current_location);
-void display_screen(Screen current_screen, Location current_location, int current_date);
+void execute_command(struct entered_command entered_command, Screen *screen_id, Location *current_location, Measurement_type *current_measurement);
+void display_screen(Screen current_screen, Location current_location, int current_date, Measurement_type current_measurement);
 
 // Command functions
-void command_quit(int *screen_id);
-void command_help(int *screen_id);
-void command_reset(int *screen_id);
+void command_quit(Screen *screen_id);
+void command_help(Screen *screen_id);
+void command_reset(Screen *screen_id);
 void command_arg_test(char* argument);
-void command_location(int *screen_id, Location *current_location);
+void command_location(Screen *screen_id, Location *current_location);
+void command_graph(Screen *screen_id, Measurement_type *current_measurement);
 
 // Screen functions
 void screen_help();
 void screen_main();
 void screen_data(Location location_id, int date);
+void screen_graph(Location location_id, Measurement_type measurement);
 
 // Helper functions
 void clear_terminal();
+void clear_input();
 
 // Main Functions -----------------------------------------------------------------------
 
@@ -101,17 +113,18 @@ int main( )
     Screen current_screen = SCREEN_MAIN;
     int current_date = 1728932400; // TODO: might want to do this dynamically instead
     Location current_location = FOLEHAVEN;
+    Measurement_type current_measurement = PM2_5;
 
     while(current_screen > 0) {
         struct entered_command entered_command;
 
         clear_terminal();
 
-        display_screen(current_screen, current_location, current_date);
+        display_screen(current_screen, current_location, current_date, current_measurement);
 
         char *user_input = get_input();
         entered_command = get_command(user_input);
-        execute_command(entered_command, &current_screen, &current_location);
+        execute_command(entered_command, &current_screen, &current_location, &current_measurement);
 
         (user_input);
     }
@@ -120,7 +133,7 @@ int main( )
 }
 
 // Displays a screen based on the id of the current screen using a switch statement
-void display_screen(Screen current_screen, Location current_location, int current_date) {
+void display_screen(Screen current_screen, Location current_location, int current_date, Measurement_type current_measurement) {
     switch (current_screen) {
         case SCREEN_MAIN:
             screen_main();
@@ -131,8 +144,11 @@ void display_screen(Screen current_screen, Location current_location, int curren
         case SCREEN_DATA:
             screen_data(current_location, current_date);
             break;
+        case SCREEN_GRAPH:
+            screen_graph(current_location, current_measurement);
+            break;
         default:
-            printf("Error");
+            printf("Error: Screen with id %i does not exist", current_screen);
     }
 }
 
@@ -187,7 +203,7 @@ struct entered_command get_command(char *input_string) {
 }
 
 // Executes a command based on its id using a switch statement
-void execute_command(struct entered_command entered_command, int *screen_id, Location *current_location) {
+void execute_command(struct entered_command entered_command, Screen *screen_id, Location *current_location, Measurement_type *current_measurement) {
     switch (entered_command.command_id) {
         case CMD_QUIT:
             command_quit(screen_id);
@@ -204,6 +220,9 @@ void execute_command(struct entered_command entered_command, int *screen_id, Loc
         case CMD_ARG_TEST:
             command_arg_test(entered_command.argument);
             break;
+        case CMD_GRAPH:
+            command_graph(screen_id, current_measurement);
+            break;
         default:
             printf("Invalid Command\n");
     }
@@ -211,41 +230,66 @@ void execute_command(struct entered_command entered_command, int *screen_id, Loc
 
 // Commands ---------------------------------------------------------
 
-void command_help(int *screen_id) {
+void command_help(Screen *screen_id) {
     *screen_id = SCREEN_HELP;
 }
 
-void command_quit(int *screen_id) {
+void command_quit(Screen *screen_id) {
     *screen_id = -1;
 }
 
-void command_reset(int *screen_id) {
+void command_reset(Screen *screen_id) {
     *screen_id = SCREEN_MAIN;
 }
 
-void command_location(int *screen_id, Location *current_location) {
+void command_location(Screen *screen_id, Location *current_location) {
     clear_terminal();
     printf("Select Location:\n");
     printf("_____________________________________________\n");
     printf(" [1] Folehaven\n");
     printf(" [2] Backersvej\n");
-    printf(" [3] Hillerrødsgade\n");
+    printf(" [3] Hillerroedsgade\n");
     printf("______________________________________________\n");
     printf("Enter Number: ");
 
     Location new_location = -1;
-    while (new_location >= 3 || new_location <= 0) {
-        scanf("%i", &new_location);
+
+    // Gets input for what location to choose until the input is valid and withing the accepted values.
+    while (!scanf("%i", &new_location) || new_location > LAST_LOCATION || new_location < 1) {
+        clear_input();
+        printf("Invalid Input, please try again: ");
     };
 
     *current_location = new_location;
-
     *screen_id = SCREEN_DATA;
 }
 
 void command_arg_test(char* argument) {
     printf("You entered argument: %s\nPress any key to continue:", argument);
     fgets(argument, 10, stdin);
+}
+
+//TODO: Lot of repetition from command_location, could possible shorten it by making a helper function
+void command_graph(Screen *screen_id, Measurement_type *current_measurement) {
+    clear_terminal();
+    printf("Select measurement type:\n");
+    printf("_____________________________________________\n");
+    printf(" [1] PM2.5\n");
+    printf(" [2] PM10\n");
+    printf(" [3] NO2\n");
+    printf("______________________________________________\n");
+    printf("Enter Number: ");
+
+    Measurement_type new_measurement_type = -1;
+
+    // Gets input for what location to choose until the input is valid and withing the accepted values.
+    while (!scanf("%i", &new_measurement_type) || new_measurement_type > LAST_LOCATION || new_measurement_type < 1) {
+        clear_input();
+        printf("Invalid Input, please try again: ");
+    };
+
+    *current_measurement = new_measurement_type;
+    *screen_id = SCREEN_GRAPH;
 }
 
 // Screens -----------------------------------------------------------------
@@ -279,10 +323,33 @@ void screen_data(Location location_id, int date) {
     float data[5];
 
     if (get_data_for_date(filename, data, date) == -1) {
-        printf("Horrible error happened :pensive:\nSelected File: %s\n", filename);
+        printf("Couldnt load data for file: %s\n", filename);
     }
 
     print_data(data);
+}
+
+//TODO: Lot of repetition from screen_data, could shorten it by having a helper function
+void screen_graph(Location location_id, Measurement_type measurement) {
+    char *filename = "none";
+
+    for (int i = 0; i < sizeof (location_table) / sizeof (location_table[0]); i++) {
+        if (location_id == location_table[i].location_id) {
+            filename = location_table[i].filename;
+            break;
+        }
+    }
+
+    float location_data[5][MAX_ROWS];
+
+    if (load_data(filename, location_data) == -1) {
+        printf("Couldnt load data for file: %s\n", filename);
+    }
+
+    // TODO: Set threshold depending on selected measurement type. Add option to chose date interval as well cus rn it just takes the first 10 entries
+    draw_graph(10, location_data[measurement], 10, 3);
+
+    printf("\n\n--------------------------------------------\n");
 }
 
 // Helper functions ----------------------------------------
@@ -294,4 +361,9 @@ void clear_terminal() {
 #else
     system("clear");
 #endif
+}
+
+// Clears just the input
+void clear_input() {
+    while ((getchar()) != '\n');
 }
