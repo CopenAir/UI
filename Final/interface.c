@@ -68,7 +68,7 @@ struct command_entry command_table[] = {
 };
 
 struct location_entry location_table[] = {
-        {"../data/Folehaven.csv", FOLEHAVEN},
+        {"../data/folehaven.csv", FOLEHAVEN},
         {"../data/backersvej.csv", BACKERSVEJ},
         {"../data/hilleroedsgade.csv", HILLEROESGADE},
 };
