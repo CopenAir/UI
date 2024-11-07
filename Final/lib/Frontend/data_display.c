@@ -19,7 +19,8 @@ void draw_graph(int size, float *data, float max_val, float threshold) {
 
     /*  Interesting behaviour on certain csv data, with y-axis repeating multiple times
         Implement dynamic scalling
-        column 1 is empty */
+        column 1 is empty
+        Print road name, date, etc. */
 
     for (float i = max_val; i > 0; i -= 0.1) {
         //printf statement with ternary operator inside. Essentially an if statement that returns the appropriate colour value
@@ -52,7 +53,7 @@ void print_data(float data[]) {
     printf("---------------------------------------------\n");
     printf(" %-10s %-10s %-10s\n", "Substance", "Data", "Rating");
     printf("---------------------------------------------\n");
-    printf("[%d]PM2.5:  %-4.1f %-5s", 1, data[1], "μg/m3");
+    printf("[%d]PM2.5:  %-4.1f %-5s", 1, data[1], "μg/m3"); //add spaces as needed
     print_rating(data[1], WHO_24HOUR_PM2_5);
     printf("\n");
 
@@ -94,10 +95,10 @@ void unix_to_hour(time_t unix_time, char* hour) {
     struct tm* time_info = localtime(&unix_time);
     strftime(hour, 10, "%H", time_info);
 }
-
+// Integrate with CSV backend
 void hour_display(char* road, time_t unix_time) {
     printf("\033[H\033[J");  // ANSI escape code to clear the screen
-    float data[4] = {10, 5, 25, 20};
+    float data[4] = {10, 5, 25, 20}; //EXAMPLE DATA
 
     char date[20];
     char hour[2];
@@ -109,15 +110,8 @@ void hour_display(char* road, time_t unix_time) {
 }
 
 void day_display(char* road, time_t unix_time) {
-    printf("\033[H\033[J");  // ANSI escape code to clear the screen
+    printf("\033[H\033[J");  // ANSI escape code to clear the screen | TO REPLACE WITH INTERFACE.C CLEAER FUNC
     float* data[4];
-    float a[5] = {1 ,2 ,3 ,4 ,5};
-    float b[5] = {5, 4, 3, 2, 1};
-
-    data[0] = a;
-    data[1] = a;
-    data[2] = b;
-    data[3] = b;
 
     float avg[4];
     average(data, 4, avg);
@@ -133,13 +127,6 @@ void month_display(char* road, time_t unix_time) {
     //needs adaptation
     printf("\033[H\033[J");  // ANSI escape code to clear the screen
     float* data[4];
-    float a[5] = {1 ,2 ,3 ,4 ,5};
-    float b[5] = {5, 4, 3, 2, 1};
-
-    data[0] = a;
-    data[1] = a;
-    data[2] = b;
-    data[3] = b;
 
     float avg[4];
     average(data, 4, avg);

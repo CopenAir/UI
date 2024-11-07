@@ -32,7 +32,7 @@ typedef enum {
     FOLEHAVEN = 1,
     BACKERSVEJ,
     HILLEROESGADE,
-    LAST_LOCATION = HILLEROESGADE, //huh?
+    LAST_LOCATION = HILLEROESGADE,
 } Location;
 
 typedef enum {
@@ -65,7 +65,10 @@ struct command_entry command_table[] = {
         {"reset", CMD_RESET},
         {"r", CMD_RESET},
         {"location", CMD_LOCATION},
-        {"graph", CMD_GRAPH}};
+        {"l", CMD_LOCATION},
+        {"graph", CMD_GRAPH},
+        {"g", CMD_GRAPH}
+};
 
 struct location_entry location_table[] = {
         {"../data/folehaven.csv", FOLEHAVEN},
@@ -110,6 +113,7 @@ void clear_input();
 int main( )
 {
     Screen current_screen = SCREEN_MAIN;
+    //standards
     int current_date = 1728932400; // TODO: might want to do this dynamically instead
     Location current_location = FOLEHAVEN;
     Measurement_type current_measurement = PM2_5;
@@ -124,8 +128,6 @@ int main( )
         char *user_input = get_input();
         entered_command = get_command(user_input);
         execute_command(entered_command, &current_screen, &current_location, &current_measurement);
-
-        (user_input);
     }
 
     return 0;
@@ -252,7 +254,7 @@ void command_location(Screen *screen_id, Location *current_location) {
     Location new_location = -1;
 
     // Gets input for what location to choose until the input is valid and withing the accepted values.
-    while (!scanf("%i", &new_location) || new_location > LAST_LOCATION || new_location < 1) {
+    while (!scanf("%i", &new_location) || new_location > 3 || new_location < 1) {
         clear_input();
         printf("Invalid Input, please try again: ");
     };
@@ -261,7 +263,6 @@ void command_location(Screen *screen_id, Location *current_location) {
     *screen_id = SCREEN_DATA;
 }
 
-//TODO: Lot of repetition from command_location, could possible shorten it by making a helper function
 void command_graph(Screen *screen_id, Measurement_type *current_measurement) { //threshold value does not change
     clear_terminal();
     printf("Select measurement type:\n");
@@ -275,7 +276,7 @@ void command_graph(Screen *screen_id, Measurement_type *current_measurement) { /
     Measurement_type new_measurement_type = -1;
 
     // Gets input for what location to choose until the input is valid and withing the accepted values.
-    while (!scanf("%i", &new_measurement_type) || new_measurement_type > NO2 || new_measurement_type < 1) {
+    while (!scanf("%i", &new_measurement_type) || new_measurement_type > 3 || new_measurement_type < 1) {
         clear_input();
         printf("Invalid Input, please try again: ");
     };
@@ -300,8 +301,8 @@ void screen_help() {
     printf("  q or quit - Quits the program\n");
     printf("  h or help - Display this message\n");
     printf("  r or reset - Resets program back to original state\n");
-    printf("  location - selects data location\n");
-    printf("  graph - Prints out barchart of selected data\n");
+    printf("  l or location - selects data location\n");
+    printf("  g or graph - Prints out barchart of selected data\n");
     printf("  \n");
     printf("  \n");
 }
@@ -320,6 +321,7 @@ void screen_data(Location location_id, int date) {
 
     if (get_data_for_date(filename, data, date) == -1) {
         printf("Couldnt load data for file: %s\n", filename);
+        return;
     }
 
     print_data(data);
@@ -340,6 +342,7 @@ void screen_graph(Location location_id, Measurement_type measurement) {
 
     if (load_data(filename, location_data) == -1) {
         printf("Couldnt load data for file: %s\n", filename);
+        return;
     }
 
     // TODO: Set threshold depending on selected measurement type. Add option to chose date interval as well cus rn it just takes the first 10 entries

@@ -1,7 +1,7 @@
 /*  Backend CSV matrix loader
     21/10/2024 @ 11:24
     csv.c V1.2
-    
+
     Sebastian Lindau-Skands & Fabian Loki */
 
 #include <stdio.h>
@@ -16,7 +16,7 @@ int load_data(char *filename, float data_matrix[][MAX_ROWS]) {
     char delimiter = ',';
     FILE *data = fopen(filename, "r");
     if (data == NULL) {
-        return -1; 
+        return -1;
     }
 
     char line[MAX_LINE_LENGTH];
@@ -28,7 +28,7 @@ int load_data(char *filename, float data_matrix[][MAX_ROWS]) {
             if (value != NULL) {
                 data_matrix[col][row] = atof(value);
             }
-            value = strtok(NULL, ",");
+            value = strtok(NULL, &delimiter);
         }
         row++;
     }
