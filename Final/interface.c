@@ -36,9 +36,10 @@ typedef enum {
 } Location;
 
 typedef enum {
-    PM2_5,
+    PM2_5 = 1,
     PM10,
     NO2,
+    // Im not expecting us to add more measurement types, but if it does happen remember to edit NO2 to the new last value in command_graph()
 } Measurement_type;
 
 // Structs ------------------------------------------------------------------------
@@ -275,7 +276,7 @@ void command_graph(Screen *screen_id, Measurement_type *current_measurement) { /
     Measurement_type new_measurement_type = -1;
 
     // Gets input for what location to choose until the input is valid and withing the accepted values.
-    while (!scanf("%i", &new_measurement_type) || new_measurement_type > LAST_LOCATION || new_measurement_type < 1) {
+    while (!scanf("%i", &new_measurement_type) || new_measurement_type > NO2 || new_measurement_type < 1) {
         clear_input();
         printf("Invalid Input, please try again: ");
     };
