@@ -16,3 +16,5 @@ Step 1: Make a new constant in the Screen enum (use the format `SCREEN_[name]`)
 Step 2: Create the function used to print the screen in the "screens" sections (use the format `screen_[name]()`)
 
 Step 3: Add the function that handles the screen to the switch statement in `display_screen()`.
+
+`gcc -I./lib/csv_backend -I./lib/Frontend -o interface interface.c ./lib/csv_backend/csv.c ./lib/Frontend/data_display.c` to compile
