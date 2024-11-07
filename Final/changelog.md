@@ -9,3 +9,9 @@
 07/11/24 @ 09:40
 --------------------
 - Fixed "CMD_QUIT"
+
+07/11/24 @ 16:28
+--------------------
+- Added "CMD_DATA"
+- Cleaned up in ".h" files and removed unnecessary "#define"
+- Defined "RED", "GREEN", "RESET_COLOUR" & "CLR_SCREEN" in "data_display.c" to improve readability
