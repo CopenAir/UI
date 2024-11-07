@@ -7,15 +7,18 @@
 #define WHO_24HOUR_PM10 45
 #define WHO_24HOUR_NO2 25
 
+//define colour
+#define RED "\x1b[31m"
+#define GREEN "\x1b[32m"
+#define RESET_COLOUR "\x1b[0m"
+#define CLR_SCREEN "\033[H\033[J"
+
 void draw_graph(int size, float *data, float max_val, float threshold) {
     /*  size = size of x-axis
         *a = float array with data points
         max_val = maximum value in the data points
         threshold = value to use as a threshold for the bar chart
-
-        \x1b[ = how to define colour
-        31m=red
-        32m=green */
+        */
 
     /*  Interesting behaviour on certain csv data, with y-axis repeating multiple times
         Implement dynamic scalling
@@ -23,14 +26,12 @@ void draw_graph(int size, float *data, float max_val, float threshold) {
         Print road name, date, etc. */
 
     for (float i = max_val; i > 0; i -= 0.1) {
-        //printf statement with ternary operator inside. Essentially an if statement that returns the appropriate colour value
         printf("%s", i>=10.0 ? "" : " ");
-        printf("%s%.1f║", i <= threshold ? "\x1b[32m" : "\x1b[31m", i); //can be made with enum or define?
+        printf("%s%.1f║", i <= threshold ? GREEN : RED, i);
         for (int j = 0; j < size; j++) {
-            //printf statement with ternary operator inside. Essentially an if statement that returns the appropriate thing to be printed
             printf("%s", data[j] >= i ? "███ " : "    ");
         }
-        printf("\n\x1b[0m");
+        printf("\n%s", RESET_COLOUR);
     }
 
     printf("    ╚");
@@ -44,9 +45,9 @@ void draw_graph(int size, float *data, float max_val, float threshold) {
 // prints the rating in different color based on data and threshold
 void print_rating(float data, int threshold) {
     if (data < threshold)
-        printf("\033[0;32m within tolerances\033[0m");
+        printf("%s within tolerances %s", GREEN, RESET_COLOUR);
     else
-        printf("\033[0;31m outside tolerances\033[0m");
+        printf("%s outside tolerances %s", RED, RESET_COLOUR);
 }
 
 void print_data(float data[]) {
@@ -97,7 +98,7 @@ void unix_to_hour(time_t unix_time, char* hour) {
 }
 // Integrate with CSV backend
 void hour_display(char* road, time_t unix_time) {
-    printf("\033[H\033[J");  // ANSI escape code to clear the screen
+    printf(CLR_SCREEN);  // ANSI escape code to clear the screen
     float data[4] = {10, 5, 25, 20}; //EXAMPLE DATA
 
     char date[20];
@@ -110,7 +111,7 @@ void hour_display(char* road, time_t unix_time) {
 }
 
 void day_display(char* road, time_t unix_time) {
-    printf("\033[H\033[J");  // ANSI escape code to clear the screen | TO REPLACE WITH INTERFACE.C CLEAER FUNC
+    printf(CLR_SCREEN);  // ANSI escape code to clear the screen | TO REPLACE WITH INTERFACE.C CLEAER FUNC
     float* data[4];
 
     float avg[4];
@@ -125,7 +126,7 @@ void day_display(char* road, time_t unix_time) {
 
 void month_display(char* road, time_t unix_time) {
     //needs adaptation
-    printf("\033[H\033[J");  // ANSI escape code to clear the screen
+    printf(CLR_SCREEN);  // ANSI escape code to clear the screen
     float* data[4];
 
     float avg[4];
