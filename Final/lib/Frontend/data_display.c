@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <time.h>
 
-// WHO guidelines for air pollution from 2021 
+// WHO guidelines for air pollution from 2021
 // https://www.who.int/news-room/feature-stories/detail/what-are-the-who-air-quality-guidelines
 #define WHO_24HOUR_PM2_5 15
 #define WHO_24HOUR_PM10 45
@@ -17,8 +17,12 @@ void draw_graph(int size, float *data, float max_val, float threshold) {
         31m=red
         32m=green */
 
+    /*  Interesting behaviour on certain csv data, with y-axis repeating multiple times
+        Implement dynamic scalling*/
+
     for (float i = max_val; i > 0; i -= 0.1) {
         //printf statement with ternary operator inside. Essentially an if statement that returns the appropriate colour value
+        printf("%s", i>=10.0 ? "" : " ");
         printf("%s%.1f║", i <= threshold ? "\x1b[32m" : "\x1b[31m", i);
         for (int j = 0; j < size; j++) {
             //printf statement with ternary operator inside. Essentially an if statement that returns the appropriate thing to be printed
@@ -27,7 +31,7 @@ void draw_graph(int size, float *data, float max_val, float threshold) {
         printf("\n\x1b[0m");
     }
 
-    printf("   ╚");
+    printf("    ╚");
     for (int i = 0; i < size; i++) {
         printf("════");
     }
@@ -77,7 +81,7 @@ void average(float** data, int n, float* avg) {
     avg[0] = pm25_sum / n;
     avg[1] = pm10_sum / n;
     avg[2] = no2_sum / n;
-    avg[3] = temp_sum / n; 
+    avg[3] = temp_sum / n;
 }
 
 void unix_to_date(time_t unix_time, char* date) {
@@ -107,7 +111,7 @@ void day_display(char* road, time_t unix_time) {
     printf("\033[H\033[J");  // ANSI escape code to clear the screen
     float* data[4];
     float a[5] = {1 ,2 ,3 ,4 ,5};
-    float b[5] = {5, 4, 3, 2, 1}; 
+    float b[5] = {5, 4, 3, 2, 1};
 
     data[0] = a;
     data[1] = a;
@@ -129,7 +133,7 @@ void month_display(char* road, time_t unix_time) {
     printf("\033[H\033[J");  // ANSI escape code to clear the screen
     float* data[4];
     float a[5] = {1 ,2 ,3 ,4 ,5};
-    float b[5] = {5, 4, 3, 2, 1}; 
+    float b[5] = {5, 4, 3, 2, 1};
 
     data[0] = a;
     data[1] = a;
@@ -145,4 +149,3 @@ void month_display(char* road, time_t unix_time) {
 
     print_data(avg);
 }
-

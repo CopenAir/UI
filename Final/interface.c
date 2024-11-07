@@ -14,7 +14,6 @@ typedef enum {
     CMD_HELP,
     CMD_RESET,
     CMD_LOCATION,
-    CMD_ARG_TEST,
     CMD_GRAPH
 } Command_id;
 
@@ -56,16 +55,14 @@ struct location_entry {
 
 // Lookup table for storing the command entries
 struct command_entry command_table[] = {
-        {"quit", CMD_QUIT},
-        {"q", CMD_QUIT},
+        {"quit", CMD_QUIT}, //not working
+        {"q", CMD_QUIT}, //not working
         {"help", CMD_HELP},
         {"h", CMD_HELP},
         {"reset", CMD_RESET},
         {"r", CMD_RESET},
         {"location", CMD_LOCATION},
-        {"arg_test", CMD_ARG_TEST},
-        {"graph", CMD_GRAPH}
-};
+        {"graph", CMD_GRAPH}};
 
 struct location_entry location_table[] = {
         {"../data/folehaven.csv", FOLEHAVEN},
@@ -92,7 +89,6 @@ void display_screen(Screen current_screen, Location current_location, int curren
 void command_quit(Screen *screen_id);
 void command_help(Screen *screen_id);
 void command_reset(Screen *screen_id);
-void command_arg_test(char* argument);
 void command_location(Screen *screen_id, Location *current_location);
 void command_graph(Screen *screen_id, Measurement_type *current_measurement);
 
@@ -217,9 +213,6 @@ void execute_command(struct entered_command entered_command, Screen *screen_id, 
         case CMD_LOCATION:
             command_location(screen_id, current_location);
             break;
-        case CMD_ARG_TEST:
-            command_arg_test(entered_command.argument);
-            break;
         case CMD_GRAPH:
             command_graph(screen_id, current_measurement);
             break;
@@ -235,7 +228,9 @@ void command_help(Screen *screen_id) {
 }
 
 void command_quit(Screen *screen_id) {
-    *screen_id = -1;
+    //*screen_id = -1;
+    clear_terminal();
+    exit(0); //yes it's nasty, but it works
 }
 
 void command_reset(Screen *screen_id) {
@@ -264,13 +259,8 @@ void command_location(Screen *screen_id, Location *current_location) {
     *screen_id = SCREEN_DATA;
 }
 
-void command_arg_test(char* argument) {
-    printf("You entered argument: %s\nPress any key to continue:", argument);
-    fgets(argument, 10, stdin);
-}
-
 //TODO: Lot of repetition from command_location, could possible shorten it by making a helper function
-void command_graph(Screen *screen_id, Measurement_type *current_measurement) {
+void command_graph(Screen *screen_id, Measurement_type *current_measurement) { //threshold value does not change
     clear_terminal();
     printf("Select measurement type:\n");
     printf("_____________________________________________\n");
@@ -298,6 +288,8 @@ void screen_main() {
     printf("Welcome\n\n");
     printf("Enter help for help\n");
     printf("Enter quit to quit\n");
+    printf("Enter location to select location\n");
+    printf("Enter graph to create a barchart of selected data\n");
     printf("--------------------------------------\n");
 }
 
@@ -306,6 +298,8 @@ void screen_help() {
     printf("  q or quit - Quits the program\n");
     printf("  h or help - Display this message\n");
     printf("  r or reset - Resets program back to original state\n");
+    printf("  location - selects data location\n");
+    printf("  graph - Prints out barchart of selected data\n");
     printf("  \n");
     printf("  \n");
 }
