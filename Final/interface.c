@@ -30,7 +30,7 @@ typedef enum {
     FOLEHAVEN = 1,
     BACKERSVEJ,
     HILLEROESGADE,
-    LAST_LOCATION = HILLEROESGADE,
+    LAST_LOCATION = HILLEROESGADE, //huh?
 } Location;
 
 typedef enum {

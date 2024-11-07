@@ -23,7 +23,7 @@ void draw_graph(int size, float *data, float max_val, float threshold) {
     for (float i = max_val; i > 0; i -= 0.1) {
         //printf statement with ternary operator inside. Essentially an if statement that returns the appropriate colour value
         printf("%s", i>=10.0 ? "" : " ");
-        printf("%s%.1f║", i <= threshold ? "\x1b[32m" : "\x1b[31m", i);
+        printf("%s%.1f║", i <= threshold ? "\x1b[32m" : "\x1b[31m", i); //can be made with enum or define?
         for (int j = 0; j < size; j++) {
             //printf statement with ternary operator inside. Essentially an if statement that returns the appropriate thing to be printed
             printf("%s", data[j] >= i ? "███ " : "    ");
