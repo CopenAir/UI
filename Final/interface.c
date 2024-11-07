@@ -25,7 +25,6 @@ typedef enum {
     SCREEN_HELP,
     SCREEN_DATA,
     SCREEN_GRAPH,
-    SCREEN_TABLE
 } Screen;
 
 // Enum for locations
