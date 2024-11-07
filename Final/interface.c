@@ -55,8 +55,8 @@ struct location_entry {
 
 // Lookup table for storing the command entries
 struct command_entry command_table[] = {
-        {"quit", CMD_QUIT}, //not working
-        {"q", CMD_QUIT}, //not working
+        {"quit", CMD_QUIT},
+        {"q", CMD_QUIT},
         {"help", CMD_HELP},
         {"h", CMD_HELP},
         {"reset", CMD_RESET},
