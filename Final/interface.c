@@ -16,7 +16,7 @@ typedef enum {
     CMD_LOCATION,
     CMD_GRAPH,
     CMD_TIME, //TO BE IMPLEMENTED
-    CMD_TABLE //TO BE IMPLEMENTED | NAVIGATE BACK TO TABLE DISPLAYED AFTER LOCATION SELECTION
+    CMD_DATA
 } Command_id;
 
 // Enum for screen id's
@@ -24,7 +24,8 @@ typedef enum {
     SCREEN_MAIN = 1,
     SCREEN_HELP,
     SCREEN_DATA,
-    SCREEN_GRAPH
+    SCREEN_GRAPH,
+    SCREEN_TABLE
 } Screen;
 
 // Enum for locations
@@ -67,7 +68,9 @@ struct command_entry command_table[] = {
         {"location", CMD_LOCATION},
         {"l", CMD_LOCATION},
         {"graph", CMD_GRAPH},
-        {"g", CMD_GRAPH}
+        {"g", CMD_GRAPH},
+        {"data", CMD_DATA},
+        {"d", CMD_DATA}
 };
 
 struct location_entry location_table[] = {
@@ -97,6 +100,7 @@ void command_help(Screen *screen_id);
 void command_reset(Screen *screen_id);
 void command_location(Screen *screen_id, Location *current_location);
 void command_graph(Screen *screen_id, Measurement_type *current_measurement);
+void command_data(Screen *screen_id);
 
 // Screen functions
 void screen_help();
@@ -221,6 +225,9 @@ void execute_command(struct entered_command entered_command, Screen *screen_id, 
         case CMD_GRAPH:
             command_graph(screen_id, current_measurement);
             break;
+        case CMD_DATA:
+            command_data(screen_id);
+            break;
         default:
             printf("Invalid Command\n");
     }
@@ -230,6 +237,10 @@ void execute_command(struct entered_command entered_command, Screen *screen_id, 
 
 void command_help(Screen *screen_id) {
     *screen_id = SCREEN_HELP;
+}
+
+void command_data(Screen *screen_id){
+    *screen_id = SCREEN_DATA;
 }
 
 void command_quit(Screen *screen_id) {
@@ -289,10 +300,11 @@ void command_graph(Screen *screen_id, Measurement_type *current_measurement) { /
 
 void screen_main() {
     printf("Welcome\n\n");
-    printf("Enter help for help\n");
-    printf("Enter quit to quit\n");
-    printf("Enter location to select location\n");
-    printf("Enter graph to create a barchart of selected data\n");
+    printf("Enter h or help for help\n");
+    printf("Enter q or quit to quit\n");
+    printf("Enter l or location to select location\n");
+    printf("Enter g or graph to create a barchart of selected data\n");
+    printf("Enter d or data to display data table\n");
     printf("--------------------------------------\n");
 }
 
@@ -303,6 +315,7 @@ void screen_help() {
     printf("  r or reset - Resets program back to original state\n");
     printf("  l or location - selects data location\n");
     printf("  g or graph - Prints out barchart of selected data\n");
+    printf("  d or data to display data table");
     printf("  \n");
     printf("  \n");
 }
