@@ -17,13 +17,12 @@ void draw_graph(int size, float *data, float max_val, float threshold) {
     /*  size = size of x-axis
         *a = float array with data points
         max_val = maximum value in the data points
-        threshold = value to use as a threshold for the bar chart
-        */
+        threshold = value to use as a threshold for the bar chart */
 
     /*  Interesting behaviour on certain csv data, with y-axis repeating multiple times
         Implement dynamic scalling
-        column 1 is empty
-        Print road name, date, etc. */
+        column 1 is empty (probably due to wrong data parsing from interface.c)
+        Print road name, date, etc. (probably easier done in interface.c) */
 
     for (float i = max_val; i > 0; i -= 0.1) {
         printf("%s", i>=10.0 ? "" : " ");
