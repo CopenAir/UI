@@ -18,7 +18,8 @@ void draw_graph(int size, float *data, float max_val, float threshold) {
         32m=green */
 
     /*  Interesting behaviour on certain csv data, with y-axis repeating multiple times
-        Implement dynamic scalling*/
+        Implement dynamic scalling
+        column 1 is empty */
 
     for (float i = max_val; i > 0; i -= 0.1) {
         //printf statement with ternary operator inside. Essentially an if statement that returns the appropriate colour value
