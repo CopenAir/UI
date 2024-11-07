@@ -230,7 +230,6 @@ void command_help(Screen *screen_id) {
 }
 
 void command_quit(Screen *screen_id) {
-    //*screen_id = -1;
     clear_terminal();
     exit(0); //yes it's nasty, but it works
 }
