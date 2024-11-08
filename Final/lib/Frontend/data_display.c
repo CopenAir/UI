@@ -14,19 +14,15 @@
 #define CLR_SCREEN "\033[H\033[J"
 
 void draw_graph(int size, float *data, float max_val, float threshold) {
-    /*  size = size of x-axis
-        *a = float array with data points
-        max_val = maximum value in the data points
-        threshold = value to use as a threshold for the bar chart */
+    //TODO: Implement dynamic scalling
+    int steps = (int)(max_val * 10);
 
-    /*  Interesting behaviour on certain csv data, with y-axis repeating multiple times
-        Implement dynamic scalling
-        column 1 is empty (probably due to wrong data parsing from interface.c)
-        Print road name, date, etc. (probably easier done in interface.c) */
+    for (int step = steps; step >= 0; step--) {
+        float i = step / 10.0;
 
-    for (float i = max_val; i > 0; i -= 0.1) {
-        printf("%s", i>=10.0 ? "" : " ");
+        printf("%s", i >= 10.0 ? "" : " ");
         printf("%s%.1f║", i <= threshold ? GREEN : RED, i);
+
         for (int j = 0; j < size; j++) {
             printf("%s", data[j] >= i ? "███ " : "    ");
         }

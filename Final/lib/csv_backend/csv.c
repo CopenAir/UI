@@ -21,8 +21,11 @@ int load_data(char *filename, float data_matrix[][MAX_ROWS]) {
 
     char line[MAX_LINE_LENGTH];
     int row = 0;
+    int pass = 0;
 
     while (fgets(line, sizeof(line), data)) {
+        pass ++;
+        if (pass == 1) {row ++; continue;} //don't load the first line with the headers
         char *value = strtok(line, &delimiter);
         for (int col = 0; col < MAX_COLUMNS; col++) {
             if (value != NULL) {

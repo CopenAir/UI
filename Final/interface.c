@@ -358,7 +358,10 @@ void screen_graph(Location location_id, Measurement_type measurement) {
     }
 
     // TODO: Set threshold depending on selected measurement type. Add option to chose date interval as well cus rn it just takes the first 10 entries
-    draw_graph(10, location_data[measurement], 10, 3);
+    // TODO: Print Road name, Time and substance type
+    // ISSUE: First entry in passed array is empty (val = 0.0)
+    // ISSUE: Passed data causes repetition error on y-axis. Unable to reproduce in isolated env.
+    draw_graph(10, location_data[measurement], 10.0, 3.0);
 
     printf("\n\n--------------------------------------------\n");
 }
