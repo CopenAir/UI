@@ -1,9 +1,3 @@
-/*  Backend CSV matrix loader
-    21/10/2024 @ 11:24
-    csv.c V1.2
-
-    Sebastian Lindau-Skands & Fabian Loki */
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -12,8 +6,8 @@
 #define MAX_COLUMNS 5
 #define MAX_ROWS 8785
 
-int load_data(char *filename, float data_matrix[][MAX_ROWS]) {
-    char delimiter = ',';
+int load_data(const char *filename, float data_matrix[][MAX_ROWS]) {
+    const char *delimiter = ",";  // Delimiter as a string for strtok
     FILE *data = fopen(filename, "r");
     if (data == NULL) {
         return -1;
@@ -21,43 +15,49 @@ int load_data(char *filename, float data_matrix[][MAX_ROWS]) {
 
     char line[MAX_LINE_LENGTH];
     int row = 0;
-    int pass = 0;
 
-    while (fgets(line, sizeof(line), data)) {
-        pass ++;
-        if (pass == 1) {row ++; continue;} //don't load the first line with the headers
-        char *value = strtok(line, &delimiter);
+    // Skip the first line with headers
+    if (fgets(line, sizeof(line), data) == NULL) {
+        fclose(data);
+        return -1;  // Failed to read header line
+    }
+
+    // Read data rows
+    while (fgets(line, sizeof(line), data) && row < MAX_ROWS) {
+        char *value = strtok(line, delimiter);
         for (int col = 0; col < MAX_COLUMNS; col++) {
             if (value != NULL) {
                 data_matrix[col][row] = atof(value);
+                value = strtok(NULL, delimiter);
+            } else {
+                data_matrix[col][row] = 0.0f;  // Set missing values to 0 for safety
             }
-            value = strtok(NULL, &delimiter);
         }
         row++;
     }
 
     fclose(data);
-
     return 0;
 }
 
-int get_data_for_date(char *filename, float data_array[], int date) {
-    float location_data[5][MAX_ROWS];
+int get_data_for_date(const char *filename, float data_array[], int date) {
+    float location_data[MAX_COLUMNS][MAX_ROWS] = {0};  // Initialize to avoid uninitialized memory issues
 
     if (load_data(filename, location_data) == -1) {
         return -1;
     }
 
+    int date_found = 0;
     for (int i = 0; i < MAX_ROWS; i++) {
-        if (location_data[0][i] == date) {
-            // When the date is found, extract the data for that date
-            for (int j = 0; j < 5; j++) {
+        if (location_data[0][i] == (float)date) {
+            date_found = 1;
+            // Copy the row for the specified date
+            for (int j = 0; j < MAX_COLUMNS; j++) {
                 data_array[j] = location_data[j][i];
             }
-
             break;
         }
     }
 
-    return 0;
+    return date_found ? 0 : -1;  // Return -1 if date not found
 }

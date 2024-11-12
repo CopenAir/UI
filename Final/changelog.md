@@ -21,3 +21,7 @@
 - Traced several issues including "empty first column" and "repeating y axis" back to interface.c
 - replaced y-axis enumerator with integer system for easier scalability
 - Patched an issue where "csv.c" would load the headers on line 1, from the csv files
+
+12/11/24 @ 16:26
+--------------------
+- fixed several issues in csv.c that prevented O2, O3, Ofast, Os and Og optimisation in reading data correctly
