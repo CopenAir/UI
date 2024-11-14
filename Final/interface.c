@@ -120,7 +120,7 @@ int main( )
     int current_date = 1728932400; // TODO: might want to do this dynamically instead
     Location current_location = FOLEHAVEN;
     Measurement_type current_measurement = PM2_5;
-    char user_input[10];
+    char user_input[50];
 
     while(current_screen > 0) {
         struct entered_command entered_command;
@@ -129,6 +129,7 @@ int main( )
         display_screen(current_screen, current_location, current_date, current_measurement);
         get_input(user_input);
         entered_command = get_command(user_input);
+
         execute_command(entered_command, &current_screen, &current_location, &current_measurement);
     }
 
@@ -160,12 +161,11 @@ void get_input(char *input) {
     printf("Enter Command:");
 
     // Using fgets instead of scanf to prevent input overflow.
-    //fgets(input, 50, stdin);
-    scanf("%10s", input);
+    fgets(input, 50, stdin);
 
     // Removes the newline at the end of the string (cus fgets includes that).
     // strcspn returns how many characters there are before a newline is encountered. This number is also the placement of the newline, which then gets set to null.
-    //input[strcspn(input, "\n")] = '\0';
+    input[strcspn(input, "\n")] = '\0';
     return;
 }
 
@@ -284,10 +284,13 @@ void command_graph(Screen *screen_id, Measurement_type *current_measurement) { /
     Measurement_type new_measurement_type = -1;
 
     // Gets input for what location to choose until the input is valid and withing the accepted values.
-    while (!scanf("%i", &new_measurement_type) || new_measurement_type > 3 || new_measurement_type < 1) {
-        clear_input();
-        printf("Invalid Input, please try again: ");
-    };
+    char input[32];
+    char *endptr;
+    do {
+        printf("Enter measurement type (1-3): ");
+        fgets(input, sizeof(input), stdin);
+        new_measurement_type = strtol(input, &endptr, 10);
+    } while (*endptr != '\n' || new_measurement_type < 1 || new_measurement_type > 3);
 
     *current_measurement = new_measurement_type;
     *screen_id = SCREEN_GRAPH;
