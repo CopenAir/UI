@@ -88,7 +88,7 @@ struct entered_command {
 // Function Prototypes -------------------------------------------------------------
 
 // Main functions
-char* get_input();
+void get_input(char *input);
 struct entered_command get_command(char *input_string);
 void execute_command(struct entered_command entered_command, Screen *screen_id, Location *current_location, Measurement_type *current_measurement);
 void display_screen(Screen current_screen, Location current_location, int current_date, Measurement_type current_measurement);
@@ -120,15 +120,14 @@ int main( )
     int current_date = 1728932400; // TODO: might want to do this dynamically instead
     Location current_location = FOLEHAVEN;
     Measurement_type current_measurement = PM2_5;
+    char user_input[10];
 
     while(current_screen > 0) {
         struct entered_command entered_command;
-
         clear_terminal();
 
         display_screen(current_screen, current_location, current_date, current_measurement);
-
-        char *user_input = get_input();
+        get_input(user_input);
         entered_command = get_command(user_input);
         execute_command(entered_command, &current_screen, &current_location, &current_measurement);
     }
@@ -157,18 +156,17 @@ void display_screen(Screen current_screen, Location current_location, int curren
 }
 
 // Gets the input of the user
-char* get_input() {
-    char *input = malloc(50); //freed correctly
+void get_input(char *input) {
     printf("Enter Command:");
 
     // Using fgets instead of scanf to prevent input overflow.
-    fgets(input, 50, stdin);
+    //fgets(input, 50, stdin);
+    scanf("%10s", input);
 
     // Removes the newline at the end of the string (cus fgets includes that).
     // strcspn returns how many characters there are before a newline is encountered. This number is also the placement of the newline, which then gets set to null.
-    input[strcspn(input, "\n")] = '\0';
-
-    return input;
+    //input[strcspn(input, "\n")] = '\0';
+    return;
 }
 
 // Figures out what command the user typed.
@@ -359,8 +357,6 @@ void screen_graph(Location location_id, Measurement_type measurement) {
 
     // TODO: Set threshold depending on selected measurement type. Add option to chose date interval as well cus rn it just takes the first 10 entries
     // TODO: Print Road name, Time and substance type
-    // ISSUE: First entry in passed array is empty (val = 0.0) (maybe fixed???)
-    // ISSUE: Passed data causes repetition error on y-axis. Unable to reproduce in isolated env. (maybe fixed???)
     draw_graph(10, location_data[measurement], 5.0, 3.0);
 
     printf("\n\n--------------------------------------------\n");
