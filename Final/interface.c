@@ -287,7 +287,6 @@ void command_graph(Screen *screen_id, Measurement_type *current_measurement) { /
     char input[32];
     char *endptr;
     do {
-        printf("Enter measurement type (1-3): ");
         fgets(input, sizeof(input), stdin);
         new_measurement_type = strtol(input, &endptr, 10);
     } while (*endptr != '\n' || new_measurement_type < 1 || new_measurement_type > 3);
