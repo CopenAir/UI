@@ -6,6 +6,8 @@
 
 // View the readme.md for a guide on how to add stuff in here
 
+#define RST_TERM "\033c"
+
 // Emums -------------------------------------------------------------
 
 // Enum for command id's
@@ -358,7 +360,9 @@ void screen_graph(Location location_id, Measurement_type measurement) {
     }
 
     // TODO: Set threshold depending on selected measurement type. Add option to chose date interval as well cus rn it just takes the first 10 entries
-    // TODO: Print Road name, Time and substance type
+    // TODO: Make date, area and Substance dynamic
+    printf("Date: 17/10/2024 | Area: A.C.Meyers Vænge\n");
+    printf("Substance: PM2.5\n");
     draw_graph(10, location_data[measurement], 5.0, 3.0);
 
     printf("\n\n--------------------------------------------\n");
@@ -368,11 +372,7 @@ void screen_graph(Location location_id, Measurement_type measurement) {
 
 // Used to clear the terminal.
 void clear_terminal() {
-#ifdef _WIN32
-    printf("\033c");
-#else
-    printf("\033c");
-#endif
+    printf(RST_TERM);
 }
 
 // Clears just the input

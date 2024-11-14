@@ -11,7 +11,6 @@
 #define RED "\x1b[31m"
 #define GREEN "\x1b[32m"
 #define RESET_COLOUR "\x1b[0m"
-#define CLR_SCREEN "\033[H\033[J"
 
 void draw_graph(int size, float *data, float max_val, float threshold) {
     //TODO: Implement dynamic scalling
@@ -93,7 +92,6 @@ void unix_to_hour(time_t unix_time, char* hour) {
 }
 // Integrate with CSV backend
 void hour_display(char* road, time_t unix_time) {
-    printf(CLR_SCREEN);  // ANSI escape code to clear the screen
     float data[4] = {10, 5, 25, 20}; //EXAMPLE DATA
 
     char date[20];
@@ -106,7 +104,6 @@ void hour_display(char* road, time_t unix_time) {
 }
 
 void day_display(char* road, time_t unix_time) {
-    printf(CLR_SCREEN);  // ANSI escape code to clear the screen | TO REPLACE WITH INTERFACE.C CLEAER FUNC
     float* data[4];
 
     float avg[4];
@@ -120,8 +117,6 @@ void day_display(char* road, time_t unix_time) {
 }
 
 void month_display(char* road, time_t unix_time) {
-    //needs adaptation
-    printf(CLR_SCREEN);  // ANSI escape code to clear the screen
     float* data[4];
 
     float avg[4];
