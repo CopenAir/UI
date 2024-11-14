@@ -25,3 +25,14 @@
 12/11/24 @ 16:26
 --------------------
 - fixed several issues in csv.c that prevented O2, O3, Ofast, Os and Og optimisation in reading data correctly
+
+14/11/24 @ 14:05
+-------------------
+- Fixed a memory leak by replacing memaloc with a staticly allocated char pointer 
+- Fixed the Y-axis repetition issue by replacing system("clear") with printf("\033c") (the reset_terminal signal)
+- rewrote clear_screen function to acomodate for y-axis fix
+- created definition for RST_TERM
+- Removed unnecesarry definitions and lines in data_display.c for screen clearing
+- Fixed an issue where column 0 in graphs would be empty
+- Fixed an issue where draw_graph() would be called twice (however only 1 graph would be shown)
+- removed redundant print statements
