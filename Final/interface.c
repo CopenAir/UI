@@ -367,9 +367,9 @@ void screen_graph(Location location_id, Measurement_type measurement) {
 // Used to clear the terminal.
 void clear_terminal() {
 #ifdef _WIN32
-    system("cls");
+    printf("\033c");
 #else
-    system("clear");
+    printf("\033c");
 #endif
 }
 
