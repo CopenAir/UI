@@ -34,7 +34,6 @@ typedef enum {
     FOLEHAVEN = 1,
     BACKERSVEJ,
     HILLEROESGADE,
-    LAST_LOCATION = HILLEROESGADE,
 } Location;
 
 typedef enum {
@@ -93,7 +92,7 @@ struct entered_command {
 void get_input(char *input);
 struct entered_command get_command(char *input_string);
 void execute_command(struct entered_command entered_command, Screen *screen_id, Location *current_location, Measurement_type *current_measurement);
-void display_screen(Screen current_screen, Location current_location, int current_date, Measurement_type current_measurement);
+void display_screen(Screen current_screen, Location current_location, time_t current_date, Measurement_type current_measurement);
 
 // Command functions
 void command_quit(Screen *screen_id);
@@ -106,7 +105,7 @@ void command_data(Screen *screen_id);
 // Screen functions
 void screen_help();
 void screen_main();
-void screen_data(Location location_id, int date);
+void screen_data(Location location_id, time_t date);
 void screen_graph(Location location_id, Measurement_type measurement);
 
 // Helper functions
@@ -119,7 +118,7 @@ int main( )
 {
     Screen current_screen = SCREEN_MAIN;
     //standards
-    int current_date = 1728932400; // TODO: might want to do this dynamically instead
+    time_t current_date = 1728932400; // TODO: might want to do this dynamically instead
     Location current_location = FOLEHAVEN;
     Measurement_type current_measurement = PM2_5;
     char user_input[50];
@@ -139,7 +138,7 @@ int main( )
 }
 
 // Displays a screen based on the id of the current screen using a switch statement
-void display_screen(Screen current_screen, Location current_location, int current_date, Measurement_type current_measurement) {
+void display_screen(Screen current_screen, Location current_location, time_t current_date, Measurement_type current_measurement) {
     switch (current_screen) {
         case SCREEN_MAIN:
             screen_main();
@@ -168,7 +167,6 @@ void get_input(char *input) {
     // Removes the newline at the end of the string (cus fgets includes that).
     // strcspn returns how many characters there are before a newline is encountered. This number is also the placement of the newline, which then gets set to null.
     input[strcspn(input, "\n")] = '\0';
-    return;
 }
 
 // Figures out what command the user typed.
@@ -321,7 +319,7 @@ void screen_help() {
     printf("  \n");
 }
 
-void screen_data(Location location_id, int date) {
+void screen_data(Location location_id, time_t date) {
     char *filename = "none";
 
     for (int i = 0; i < sizeof (location_table) / sizeof (location_table[0]); i++) {

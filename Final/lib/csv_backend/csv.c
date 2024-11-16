@@ -40,7 +40,7 @@ int load_data(const char *filename, float data_matrix[][MAX_ROWS]) {
     return 0;
 }
 
-int get_data_for_date(const char *filename, float data_array[], int date) {
+int get_data_for_date(const char *filename, float data_array[], time_t date) {
     float location_data[MAX_COLUMNS][MAX_ROWS] = {0};  // Initialize to avoid uninitialized memory issues
 
     if (load_data(filename, location_data) == -1) {
