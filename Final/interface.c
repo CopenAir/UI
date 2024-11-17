@@ -70,7 +70,9 @@ struct command_entry command_table[] = {
         {"graph", CMD_GRAPH},
         {"g", CMD_GRAPH},
         {"data", CMD_DATA},
-        {"d", CMD_DATA}
+        {"d", CMD_DATA},
+        {"time", CMD_TIME},
+        {"t", CMD_TIME},
 };
 
 struct location_entry location_table[] = {
@@ -85,22 +87,32 @@ struct entered_command {
     char* argument;
 };
 
+// Struct for program state
+struct program_state {
+    Screen current_screen;
+    time_t current_time;
+    Location current_location;
+    Measurement_type current_measurement;
+    int running;
+};
+
 
 // Function Prototypes -------------------------------------------------------------
 
 // Main functions
 void get_input(char *input);
 struct entered_command get_command(char *input_string);
-void execute_command(struct entered_command entered_command, Screen *screen_id, Location *current_location, Measurement_type *current_measurement);
-void display_screen(Screen current_screen, Location current_location, time_t current_date, Measurement_type current_measurement);
+void execute_command(struct entered_command entered_command, struct program_state *program_state);
+void display_screen(struct program_state program_state);
 
 // Command functions
-void command_quit(Screen *screen_id);
+void command_quit(int *running);
 void command_help(Screen *screen_id);
 void command_reset(Screen *screen_id);
 void command_location(Screen *screen_id, Location *current_location);
 void command_graph(Screen *screen_id, Measurement_type *current_measurement);
 void command_data(Screen *screen_id);
+void command_date(time_t *current_date);
 
 // Screen functions
 void screen_help();
@@ -116,30 +128,30 @@ void clear_input();
 
 int main( )
 {
-    Screen current_screen = SCREEN_MAIN;
-    //standards
-    time_t current_date = 1728932400; // TODO: might want to do this dynamically instead
-    Location current_location = FOLEHAVEN;
-    Measurement_type current_measurement = PM2_5;
+    struct program_state program_state = {SCREEN_MAIN, 1728932400, FOLEHAVEN, PM2_5, 1};
+//    Screen current_screen = SCREEN_MAIN;
+//    time_t current_date = 1728932400; // TODO: might want to do this dynamically instead
+//    Location current_location = FOLEHAVEN;
+//    Measurement_type current_measurement = PM2_5;
     char user_input[50];
 
-    while(current_screen > 0) {
+    while(program_state.running) {
         struct entered_command entered_command;
         clear_terminal();
 
-        display_screen(current_screen, current_location, current_date, current_measurement);
+        display_screen(program_state);
         get_input(user_input);
         entered_command = get_command(user_input);
 
-        execute_command(entered_command, &current_screen, &current_location, &current_measurement);
+        execute_command(entered_command, &program_state);
     }
 
     return 0;
 }
 
 // Displays a screen based on the id of the current screen using a switch statement
-void display_screen(Screen current_screen, Location current_location, time_t current_date, Measurement_type current_measurement) {
-    switch (current_screen) {
+void display_screen(struct program_state program_state) {
+    switch (program_state.current_screen) {
         case SCREEN_MAIN:
             screen_main();
             break;
@@ -147,13 +159,13 @@ void display_screen(Screen current_screen, Location current_location, time_t cur
             screen_help();
             break;
         case SCREEN_DATA:
-            screen_data(current_location, current_date);
+            screen_data(program_state.current_location, program_state.current_time);
             break;
         case SCREEN_GRAPH:
-            screen_graph(current_location, current_measurement);
+            screen_graph(program_state.current_location, program_state.current_measurement);
             break;
         default:
-            printf("Error: Screen with id %i does not exist", current_screen);
+            printf("Error: Screen with id %i does not exist", program_state.current_screen);
     }
 }
 
@@ -205,26 +217,28 @@ struct entered_command get_command(char *input_string) {
 }
 
 // Executes a command based on its id using a switch statement
-void execute_command(struct entered_command entered_command, Screen *screen_id, Location *current_location, Measurement_type *current_measurement) {
+void execute_command(struct entered_command entered_command, struct program_state *program_state) {
     switch (entered_command.command_id) {
         case CMD_QUIT:
-            command_quit(screen_id);
+            command_quit(&program_state->running);
             break;
         case CMD_HELP:
-            command_help(screen_id);
+            command_help(&program_state->current_screen);
             break;
         case CMD_RESET:
-            command_reset(screen_id);
+            command_reset(&program_state->current_screen);
             break;
         case CMD_LOCATION:
-            command_location(screen_id, current_location);
+            command_location(&program_state->current_screen, &program_state->current_location);
             break;
         case CMD_GRAPH:
-            command_graph(screen_id, current_measurement);
+            command_graph(&program_state->current_screen, &program_state->current_measurement);
             break;
         case CMD_DATA:
-            command_data(screen_id);
+            command_data(&program_state->current_screen);
             break;
+//        case CMD_DATE:
+//            command_date(current)
         default:
             printf("Invalid Command\n");
     }
@@ -240,9 +254,9 @@ void command_data(Screen *screen_id){
     *screen_id = SCREEN_DATA;
 }
 
-void command_quit(Screen *screen_id) {
+void command_quit(int *running) {
     clear_terminal();
-    exit(0); //yes it's nasty, but it works
+    *running = 0;
 }
 
 void command_reset(Screen *screen_id) {
