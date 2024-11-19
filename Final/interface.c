@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 #include "lib/csv_backend/csv.h"
 #include "lib/Frontend/data_display.h"
 
@@ -17,7 +18,7 @@ typedef enum {
     CMD_RESET,
     CMD_LOCATION,
     CMD_GRAPH,
-    CMD_TIME, //TO BE IMPLEMENTED
+    CMD_TIME,
     CMD_DATA
 } Command_id;
 
@@ -40,7 +41,6 @@ typedef enum {
     PM2_5 = 1,
     PM10,
     NO2,
-    // Im not expecting us to add more measurement types, but if it does happen remember to edit NO2 to the new last value in command_graph()
 } Measurement_type;
 
 // Structs ------------------------------------------------------------------------
@@ -106,13 +106,13 @@ void execute_command(struct entered_command entered_command, struct program_stat
 void display_screen(struct program_state program_state);
 
 // Command functions
-void command_quit(int *running);
-void command_help(Screen *screen_id);
-void command_reset(Screen *screen_id);
-void command_location(Screen *screen_id, Location *current_location);
-void command_graph(Screen *screen_id, Measurement_type *current_measurement);
-void command_data(Screen *screen_id);
-void command_date(time_t *current_date);
+void command_quit(struct program_state *program_state);
+void command_help(struct program_state *program_state);
+void command_reset(struct program_state *program_state);
+void command_location(struct program_state *program_state);
+void command_graph(struct program_state *program_state);
+void command_data(struct program_state *program_state);
+void command_time(struct program_state *program_state, char* argument);
 
 // Screen functions
 void screen_help();
@@ -123,16 +123,13 @@ void screen_graph(Location location_id, Measurement_type measurement);
 // Helper functions
 void clear_terminal();
 void clear_input();
+time_t string_to_unixtime(char *string);
 
 // Main Functions -----------------------------------------------------------------------
 
 int main( )
 {
     struct program_state program_state = {SCREEN_MAIN, 1728932400, FOLEHAVEN, PM2_5, 1};
-//    Screen current_screen = SCREEN_MAIN;
-//    time_t current_date = 1728932400; // TODO: might want to do this dynamically instead
-//    Location current_location = FOLEHAVEN;
-//    Measurement_type current_measurement = PM2_5;
     char user_input[50];
 
     while(program_state.running) {
@@ -220,25 +217,25 @@ struct entered_command get_command(char *input_string) {
 void execute_command(struct entered_command entered_command, struct program_state *program_state) {
     switch (entered_command.command_id) {
         case CMD_QUIT:
-            command_quit(&program_state->running);
+            command_quit(program_state);
             break;
         case CMD_HELP:
-            command_help(&program_state->current_screen);
+            command_help(program_state);
             break;
         case CMD_RESET:
-            command_reset(&program_state->current_screen);
+            command_reset(program_state);
             break;
         case CMD_LOCATION:
-            command_location(&program_state->current_screen, &program_state->current_location);
+            command_location(program_state);
             break;
         case CMD_GRAPH:
-            command_graph(&program_state->current_screen, &program_state->current_measurement);
+            command_graph(program_state);
             break;
         case CMD_DATA:
-            command_data(&program_state->current_screen);
+            command_data(program_state);
             break;
-//        case CMD_DATE:
-//            command_date(current)
+        case CMD_TIME:
+            command_time(program_state, entered_command.argument);
         default:
             printf("Invalid Command\n");
     }
@@ -246,24 +243,27 @@ void execute_command(struct entered_command entered_command, struct program_stat
 
 // Commands ---------------------------------------------------------
 
-void command_help(Screen *screen_id) {
-    *screen_id = SCREEN_HELP;
+void command_help(struct program_state *program_state) {
+    program_state->current_screen = SCREEN_HELP;
 }
 
-void command_data(Screen *screen_id){
-    *screen_id = SCREEN_DATA;
+void command_data(struct program_state *program_state){
+    program_state->current_screen = SCREEN_DATA;
 }
 
-void command_quit(int *running) {
+void command_quit(struct program_state *program_state) {
     clear_terminal();
-    *running = 0;
+    program_state->running = 0;
 }
 
-void command_reset(Screen *screen_id) {
-    *screen_id = SCREEN_MAIN;
+void command_reset(struct program_state *program_state) {
+    program_state->current_screen = SCREEN_MAIN;
+    program_state->current_time = 1728932400;
+    program_state->current_location = FOLEHAVEN;
+    program_state->current_measurement = PM2_5;
 }
 
-void command_location(Screen *screen_id, Location *current_location) {
+void command_location(struct program_state *program_state) {
     clear_terminal();
     printf("Select Location:\n");
     printf("_____________________________________________\n");
@@ -281,11 +281,14 @@ void command_location(Screen *screen_id, Location *current_location) {
         printf("Invalid Input, please try again: ");
     };
 
-    *current_location = new_location;
-    *screen_id = SCREEN_DATA;
+    program_state->current_location = new_location;
+    program_state->current_screen = SCREEN_DATA;
 }
 
-void command_graph(Screen *screen_id, Measurement_type *current_measurement) { //threshold value does not change
+void command_graph(struct program_state *program_state) { //threshold value does not change
+    char input[32];
+    Measurement_type new_measurement_type = -1;
+
     clear_terminal();
     printf("Select measurement type:\n");
     printf("_____________________________________________\n");
@@ -293,20 +296,54 @@ void command_graph(Screen *screen_id, Measurement_type *current_measurement) { /
     printf(" [2] PM10\n");
     printf(" [3] NO2\n");
     printf("______________________________________________\n");
-    printf("Enter Number: ");
-
-    Measurement_type new_measurement_type = -1;
 
     // Gets input for what location to choose until the input is valid and withing the accepted values.
-    char input[32];
-    char *endptr;
     do {
+        printf("Enter Number: ");
         fgets(input, sizeof(input), stdin);
-        new_measurement_type = strtol(input, &endptr, 10);
-    } while (*endptr != '\n' || new_measurement_type < 1 || new_measurement_type > 3);
+        new_measurement_type = strtol(input, NULL, 10); // converts string to int, radix value 10 means decimal number
+    } while (new_measurement_type < 1 || new_measurement_type > 3);
 
-    *current_measurement = new_measurement_type;
-    *screen_id = SCREEN_GRAPH;
+    program_state->current_measurement = new_measurement_type;
+    program_state->current_screen = SCREEN_GRAPH;
+}
+
+// promts the user for what date to change to, then converts the time string to unixtime and sets the current time to that
+void command_time(struct program_state *program_state, char* argument) {
+    char input[32];
+    time_t new_time;
+
+    clear_terminal();
+
+    // if the user gave an argument, attempt to change the time to that argument, otherwise continue as if no argument was given
+    if (argument[0] != '\0') {
+        new_time = string_to_unixtime(argument);
+        if (new_time != -1) {
+            program_state->current_time = new_time;
+            return;
+        }
+
+        // printf("Invalid time format in argument\n");
+    }
+
+    printf("Enter data and time in 'YYYY-MM-DD HH' format: ");
+
+    while(1) {
+        fgets(input, sizeof(input), stdin);
+
+        clear_terminal();
+
+        // converts the string to unixtime
+        new_time = string_to_unixtime(input);
+
+        // if there are no errors, set the current time to the new time and exit loop
+        if (new_time != -1) {
+            program_state->current_time = new_time;
+            break;
+        }
+
+        printf("Please try again, this time actually using 'YYYY-MM-DD HH' (E.g '2024-05-02 11'): ");
+    }
 }
 
 // Screens -----------------------------------------------------------------
@@ -390,4 +427,33 @@ void clear_terminal() {
 // Clears just the input
 void clear_input() {
     while ((getchar()) != '\n');
+}
+
+// takes a string in the format "YYYY-MM-DD HH" and converts it to unixtime.
+// For some reason strptime isnt avaliable on Windows so we have to do our own thing
+time_t string_to_unixtime(char *string) {
+    // tm is a struct defined in time.h used to represent calendar time
+    struct tm tm;
+    int year, month, day, hour;
+
+    // reads the string input and stores the values in the corresponding variables
+    if (sscanf(string, "%i-%i-%i %i", &year, &month, &day, &hour) != 4) {
+        printf("Invalid Time format: %s\n", string);
+        return -1;
+    }
+
+    memset(&tm, 0, sizeof(struct tm));
+    tm.tm_year = year - 1900; // years since 1900 cus thats how tm works
+    tm.tm_mon = month - 1; // months since january (index starts at 0, so we have to subtract 1)
+    tm.tm_mday = day; // mday is day of the month
+    tm.tm_hour = hour;
+    tm.tm_isdst = -1; // isdst is the daylight saving flag. -1 tells the system to determine it automatically
+
+    time_t unixtime = mktime(&tm);
+    if (unixtime == -1) {
+        printf("Some error happened when converting string to unixtime: %s", string);
+        return -1;
+    }
+
+    return unixtime;
 }
