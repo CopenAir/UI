@@ -467,7 +467,7 @@ void screen_data(struct program_state *program_state) {
 }
 
 //TODO: Lot of repetition from screen_data, could shorten it by having a helper function
-void screen_graph(struct program_state *program_state) {
+void screen_graph(Location location_id, Measurement_type measurement) {
     char *filename = "none";
 
     for (int i = 0; i < sizeof (location_table) / sizeof (location_table[0]); i++) {
