@@ -19,7 +19,8 @@ typedef enum {
     CMD_LOCATION,
     CMD_GRAPH,
     CMD_TIME,
-    CMD_DATA
+    CMD_DATA,
+    CMD_TIMESPAN
 } Command_id;
 
 // Enum for screen id's
@@ -73,6 +74,9 @@ struct command_entry command_table[] = {
         {"d", CMD_DATA},
         {"time", CMD_TIME},
         {"t", CMD_TIME},
+        {"span", CMD_TIMESPAN},
+        {"timespan", CMD_TIMESPAN},
+        {"s", CMD_TIMESPAN}
 };
 
 struct location_entry location_table[] = {
@@ -93,6 +97,7 @@ struct program_state {
     time_t current_time;
     Location current_location;
     Measurement_type current_measurement;
+    struct timespan current_timespan;
     int running;
 };
 
@@ -113,12 +118,13 @@ void command_location(struct program_state *program_state);
 void command_graph(struct program_state *program_state);
 void command_data(struct program_state *program_state);
 void command_time(struct program_state *program_state, char* argument);
+void command_timespan(struct program_state *program_state);
 
 // Screen functions
 void screen_help();
 void screen_main();
-void screen_data(Location location_id, time_t date);
-void screen_graph(Location location_id, Measurement_type measurement);
+void screen_data(struct program_state *program_state);
+void screen_graph(struct program_state *program_state);
 
 // Helper functions
 void clear_terminal();
@@ -129,7 +135,17 @@ time_t string_to_unixtime(char *string);
 
 int main( )
 {
-    struct program_state program_state = {SCREEN_MAIN, 1728932400, FOLEHAVEN, PM2_5, 1};
+    struct program_state program_state = {
+            SCREEN_MAIN,
+            1728932400,
+            FOLEHAVEN,
+            PM2_5,
+            {
+                1727992800,
+                1728856800
+            },
+            1
+    };
     char user_input[50];
 
     while(program_state.running) {
@@ -156,10 +172,10 @@ void display_screen(struct program_state program_state) {
             screen_help();
             break;
         case SCREEN_DATA:
-            screen_data(program_state.current_location, program_state.current_time);
+            screen_data(&program_state);
             break;
         case SCREEN_GRAPH:
-            screen_graph(program_state.current_location, program_state.current_measurement);
+            screen_graph(&program_state);
             break;
         default:
             printf("Error: Screen with id %i does not exist", program_state.current_screen);
@@ -236,8 +252,12 @@ void execute_command(struct entered_command entered_command, struct program_stat
             break;
         case CMD_TIME:
             command_time(program_state, entered_command.argument);
+            break;
+        case CMD_TIMESPAN:
+            command_timespan(program_state);
+            break;
         default:
-            printf("Invalid Command\n");
+            printf("Error: No command found with ID: %i\n", entered_command.command_id);
     }
 }
 
@@ -261,6 +281,8 @@ void command_reset(struct program_state *program_state) {
     program_state->current_time = 1728932400;
     program_state->current_location = FOLEHAVEN;
     program_state->current_measurement = PM2_5;
+    program_state->current_timespan.start_date = 1727992800;
+    program_state->current_timespan.end_date = 1728856800;
 }
 
 void command_location(struct program_state *program_state) {
@@ -301,6 +323,8 @@ void command_graph(struct program_state *program_state) { //threshold value does
     do {
         printf("Enter Number: ");
         fgets(input, sizeof(input), stdin);
+        input[strcspn(input, "\n")] = '\0';
+
         new_measurement_type = strtol(input, NULL, 10); // converts string to int, radix value 10 means decimal number
     } while (new_measurement_type < 1 || new_measurement_type > 3);
 
@@ -329,8 +353,9 @@ void command_time(struct program_state *program_state, char* argument) {
     printf("Enter data and time in 'YYYY-MM-DD HH' format: ");
 
     while(1) {
+        // use fgets as the input requires a space (which scanf isnt able to handle)
         fgets(input, sizeof(input), stdin);
-
+        input[strcspn(input, "\n")] = '\0';
         clear_terminal();
 
         // converts the string to unixtime
@@ -344,6 +369,56 @@ void command_time(struct program_state *program_state, char* argument) {
 
         printf("Please try again, this time actually using 'YYYY-MM-DD HH' (E.g '2024-05-02 11'): ");
     }
+}
+
+void command_timespan(struct program_state *program_state) {
+    char input[32], start_date_string[32];
+    struct timespan timespan;
+
+    clear_terminal();
+    printf("Selecting timespan: xxxx-xx-xx - xxxx-xx-xx\n");
+    printf("---------------------------------------------\n");
+    printf("Enter start date in 'YYYY-MM-DD' format: ");
+
+    while(1) {
+        fgets(input, sizeof(input), stdin);
+        input[strcspn(input, "\n")] = '\0';
+        strcpy(start_date_string, input); // start_date_string is just used for showing the user their chosen date
+
+        strcat(input, " 12");
+        clear_terminal();
+
+        timespan.start_date = string_to_unixtime(input);
+        if (timespan.start_date != -1) {
+            break;
+        }
+
+        printf("\nSelecting timespan: xxxx-xx-xx - xxxx-xx-xx\n");
+        printf("---------------------------------------------\n");
+        printf("Please try again, this time actually using 'YYYY-MM-DD' (E.g '2024-05-02'): ");
+    }
+
+    printf("Selecting timespan: %s - xxxx-xx-xx\n", start_date_string);
+    printf("---------------------------------------------\n");
+    printf("Enter end date in 'YYYY-MM-DD' format: ");
+
+    while(1) {
+        fgets(input, sizeof(input), stdin);
+        input[strcspn(input, "\n")] = '\0';
+        strcat(input, " 00");
+        clear_terminal();
+
+        timespan.end_date = string_to_unixtime(input);
+        if (timespan.end_date != -1) {
+            break;
+        }
+
+        printf("\nSelecting timespan: %s - xxxx-xx-xx\n", start_date_string);
+        printf("---------------------------------------------\n");
+        printf("Please try again, this time actually using 'YYYY-MM-DD' (E.g '2024-05-02'): ");
+    }
+
+    program_state->current_timespan = timespan;
 }
 
 // Screens -----------------------------------------------------------------
@@ -370,11 +445,12 @@ void screen_help() {
     printf("  \n");
 }
 
-void screen_data(Location location_id, time_t date) {
+void screen_data(struct program_state *program_state) {
     char *filename = "none";
 
+    // gets the filename for the location
     for (int i = 0; i < sizeof (location_table) / sizeof (location_table[0]); i++) {
-        if (location_id == location_table[i].location_id) {
+        if (program_state->current_location == location_table[i].location_id) {
             filename = location_table[i].filename;
             break;
         }
@@ -382,7 +458,7 @@ void screen_data(Location location_id, time_t date) {
 
     float data[5];
 
-    if (get_data_for_date(filename, data, date) == -1) {
+    if (get_data_for_date(filename, data, program_state->current_time) == -1) {
         printf("Couldnt load data for file: %s\n", filename);
         return;
     }
@@ -391,19 +467,19 @@ void screen_data(Location location_id, time_t date) {
 }
 
 //TODO: Lot of repetition from screen_data, could shorten it by having a helper function
-void screen_graph(Location location_id, Measurement_type measurement) {
+void screen_graph(struct program_state *program_state) {
     char *filename = "none";
 
     for (int i = 0; i < sizeof (location_table) / sizeof (location_table[0]); i++) {
-        if (location_id == location_table[i].location_id) {
+        if (program_state->current_location == location_table[i].location_id) {
             filename = location_table[i].filename;
             break;
         }
     }
 
-    float location_data[5][MAX_ROWS];
+    float location_data[MAX_COLUMNS][MAX_ROWS];
 
-    if (load_data(filename, location_data) == -1) {
+    if (get_data_for_timespan(filename, location_data, program_state->current_timespan) == -1) {
         printf("Couldnt load data for file: %s\n", filename);
         return;
     }
@@ -412,7 +488,7 @@ void screen_graph(Location location_id, Measurement_type measurement) {
     // TODO: Make date, area and Substance dynamic
     printf("Date: 17/10/2024 | Area: A.C.Meyers Vænge\n");
     printf("Substance: PM2.5\n");
-    draw_graph(10, location_data[measurement], 5.0, 3.0);
+    draw_graph(10, location_data[program_state->current_measurement], 5.0, 3.0);
 
     printf("\n\n--------------------------------------------\n");
 }
@@ -429,6 +505,7 @@ void clear_input() {
     while ((getchar()) != '\n');
 }
 
+// TODO: We could have a separate file with all the time functions, cus i can see that we have a bunch in data_display as well
 // takes a string in the format "YYYY-MM-DD HH" and converts it to unixtime.
 // For some reason strptime isnt avaliable on Windows so we have to do our own thing
 time_t string_to_unixtime(char *string) {
@@ -437,7 +514,7 @@ time_t string_to_unixtime(char *string) {
     int year, month, day, hour;
 
     // reads the string input and stores the values in the corresponding variables
-    if (sscanf(string, "%i-%i-%i %i", &year, &month, &day, &hour) != 4) {
+    if (sscanf(string, "%d-%d-%d %d", &year, &month, &day, &hour) != 4) {
         printf("Invalid Time format: %s\n", string);
         return -1;
     }
