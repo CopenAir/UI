@@ -334,7 +334,6 @@ void command_graph(struct program_state *program_state) { //threshold value does
 }
 
 // promts the user for what date to change to, then converts the time string to unixtime and sets the current time to that
-//Time selection should show start and end date of available data to help the user (can just be hardcoded)
 void command_time(struct program_state *program_state, char* argument) {
     char input[32];
     time_t new_time;
@@ -351,7 +350,7 @@ void command_time(struct program_state *program_state, char* argument) {
 
         // printf("Invalid time format in argument\n");
     }
-
+    printf("Data from 2023-10-14 20 to 2024-10-14 19 \n");
     printf("Enter data and time in 'YYYY-MM-DD HH' format: ");
 
     while(1) {
@@ -373,7 +372,6 @@ void command_time(struct program_state *program_state, char* argument) {
     }
 }
 
-//Timespan should be a multiple choice (day, month, year (maybe week too)) instead of requiring user to select 2 dates (for simplicity for them, and us xD)
 void command_timespan(struct program_state *program_state) {
     char input[32], start_date_string[32];
     struct timespan timespan;
@@ -445,8 +443,8 @@ void screen_help() {
     printf("  r or reset - Resets program back to original state\n");
     printf("  l or location - selects data location\n");
     printf("  g or graph - Prints out barchart of selected data\n");
-    printf("Enter t or time to select time\n");
-    printf("Enter span or timespan to select the timespan of data\n");
+    printf("  t or time to select time\n");
+    printf("  span or timespan to select the timespan of data\n");
     printf("  d or data to display data table");
     printf("  \n");
     printf("  \n");
@@ -473,7 +471,6 @@ void screen_data(struct program_state *program_state) {
     print_data(data);
 }
 
-//TODO: Lot of repetition from screen_data, could shorten it by having a helper function
 void screen_graph(struct program_state *program_state) {
     char *filename = "none";
 
@@ -491,10 +488,39 @@ void screen_graph(struct program_state *program_state) {
         return;
     }
 
-    // TODO: Set threshold depending on selected measurement type. Add option to chose date interval as well cus rn it just takes the first 10 entries
-    // TODO: Make date, area and Substance dynamic
-    printf("Date: 17/10/2024 | Area: A.C.Meyers Vænge\n");
-    printf("Substance: PM2.5\n");
+    char *location_to_print;
+    char date[20];
+    char *meassurement;
+
+    switch(program_state->current_location) {
+        case FOLEHAVEN:
+            location_to_print = "Folehaven";
+            break;
+        case BACKERSVEJ:
+            location_to_print = "Backersvej";
+            break;
+        case HILLEROESGADE:
+            location_to_print = "Hillerødsgade";
+            break;
+    }
+
+    struct tm* time_info = localtime(&program_state->current_time);
+    strftime(date, 20, "%Y-%m-%d", time_info);
+
+    switch(program_state->current_measurement) {
+        case 1:
+            meassurement = "P2.5";
+            break;
+        case 2:
+            meassurement = "P10";
+            break;
+        case 3:
+            meassurement = "NO2";
+            break;
+    }
+
+    printf("Date: %s | Area: %s\n", date, location_to_print);
+    printf("Substance: %s\n", meassurement);
     draw_graph(10, location_data[program_state->current_measurement], 10.0, 3.0);
 
     printf("\n\n--------------------------------------------\n");
@@ -512,7 +538,6 @@ void clear_input() {
     while ((getchar()) != '\n');
 }
 
-// TODO: We could have a separate file with all the time functions, cus i can see that we have a bunch in data_display as well
 // takes a string in the format "YYYY-MM-DD HH" and converts it to unixtime.
 // For some reason strptime isnt avaliable on Windows so we have to do our own thing
 time_t string_to_unixtime(char *string) {

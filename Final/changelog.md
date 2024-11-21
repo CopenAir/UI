@@ -28,7 +28,7 @@
 
 14/11/24 @ 14:05
 -------------------
-- Fixed a memory leak by replacing memaloc with a staticly allocated char pointer 
+- Fixed a memory leak by replacing memaloc with a staticly allocated char pointer
 - Fixed the Y-axis repetition issue by replacing system("clear") with printf("\033c") (the reset_terminal signal)
 - rewrote clear_screen function to acomodate for y-axis fix
 - created definition for RST_TERM
@@ -41,3 +41,13 @@
 -------------------
 - Updated welcome and help screen to accomodate for 4 new time commands
 - Fixed a declaration issue with screen_graph()
+- Added start and end date in command_time()
+- Added dynamic Date/Place/substance printing to screen_graph()
+- Removed 6 unused function from data_display.c:
+  - hour_display()
+  - day_display()
+  - month_display()
+  - unix_to_hour()
+  - unix_to_date()
+  - average()
+-
