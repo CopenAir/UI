@@ -352,6 +352,8 @@ void command_time(struct program_state *program_state, char* argument) {
         // printf("Invalid time format in argument\n");
     }
 
+    printf("Data is available for dates between 2023-10-15 and 2024-10-13\n");
+    printf("---------------------------------------------\n");
     printf("Enter data and time in 'YYYY-MM-DD HH' format: ");
 
     while(1) {
@@ -369,7 +371,9 @@ void command_time(struct program_state *program_state, char* argument) {
             break;
         }
 
-        printf("Please try again: ");
+        printf("Data is available for dates between 2023-10-15 and 2024-10-13\n");
+        printf("---------------------------------------------\n");
+        printf("Enter data and time in 'YYYY-MM-DD HH' format: ");
     }
 }
 
@@ -379,6 +383,7 @@ void command_timespan(struct program_state *program_state) {
     struct timespan timespan;
 
     clear_terminal();
+    printf("Data is available for dates between 2023-10-15 and 2024-10-13\n");
     printf("Selecting timespan: xxxx-xx-xx - xxxx-xx-xx\n");
     printf("---------------------------------------------\n");
     printf("Enter start date in 'YYYY-MM-DD' format: ");
@@ -395,12 +400,13 @@ void command_timespan(struct program_state *program_state) {
         if (timespan.start_date != -1) {
             break;
         }
-
-        printf("\nSelecting timespan: xxxx-xx-xx - xxxx-xx-xx\n");
+        printf("Data is available for dates between 2023-10-15 and 2024-10-13\n");
+        printf("Selecting timespan: xxxx-xx-xx - xxxx-xx-xx\n");
         printf("---------------------------------------------\n");
-        printf("Please try again: ");
+        printf("Enter end date in 'YYYY-MM-DD' format: ");
     }
 
+    printf("Data is available for dates between 2023-10-15 and 2024-10-13\n");
     printf("Selecting timespan: %s - xxxx-xx-xx\n", start_date_string);
     printf("---------------------------------------------\n");
     printf("Enter end date in 'YYYY-MM-DD' format: ");
@@ -416,9 +422,10 @@ void command_timespan(struct program_state *program_state) {
             break;
         }
 
-        printf("\nSelecting timespan: %s - xxxx-xx-xx\n", start_date_string);
+        printf("Data is available for dates between 2023-10-15 and 2024-10-13\n");
+        printf("Selecting timespan: %s - xxxx-xx-xx\n", start_date_string);
         printf("---------------------------------------------\n");
-        printf("Please try again: ");
+        printf("Enter end date in 'YYYY-MM-DD' format: ");
     }
 
     program_state->current_timespan = timespan;
@@ -523,7 +530,6 @@ time_t string_to_unixtime(char *string) {
     // reads the string input and stores the values in the corresponding variables
     if (sscanf(string, "%d-%d-%d %d", &year, &month, &day, &hour) != 4) {
         printf("Invalid Time format: %s\n", string);
-        printf("Format has to match 'YYYY-MM-DD HH' (E.g '2024-05-02 11')\n");
         return -1;
     }
 
@@ -536,13 +542,12 @@ time_t string_to_unixtime(char *string) {
 
     time_t unixtime = mktime(&tm);
     if (unixtime == -1) {
-        printf("Some error happened when converting string to unixtime: %s\n", string);
+        printf("Some error happened when converting string to unixtime: %s\n\n", string);
         return -1;
     }
 
     if (unixtime < 1697313600 || unixtime > 1728932400) {
-        printf("Selected time outside of accepted range: %s\n", string);
-        printf("Time has to be between 2023-10-15 and 2024-10-13\n");
+        printf("Selected time outside of accepted range: %s\n\n", string);
         return -1;
     }
 
