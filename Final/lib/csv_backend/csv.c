@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
-#include "lib/custom_time/custom_time.h"
+#include "../custom_time/custom_time.h"
 
 #define MAX_LINE_LENGTH 1024
 #define MAX_COLUMNS 5
