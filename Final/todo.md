@@ -1,2 +1,1 @@
 - implement max of 365 in timespan, along with checks for data at given timespan (high priority)
-- fancy time sel (low priority)
