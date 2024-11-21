@@ -36,3 +36,8 @@
 - Fixed an issue where column 0 in graphs would be empty
 - Fixed an issue where draw_graph() would be called twice (however only 1 graph would be shown)
 - removed redundant print statements
+
+21/11/24 @ 06:28
+-------------------
+- Updated welcome and help screen to accomodate for 4 new time commands
+- Fixed a declaration issue with screen_graph()

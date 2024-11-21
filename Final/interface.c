@@ -429,6 +429,8 @@ void screen_main() {
     printf("Enter q or quit to quit\n");
     printf("Enter l or location to select location\n");
     printf("Enter g or graph to create a barchart of selected data\n");
+    printf("Enter t or time to select time\n");
+    printf("Enter span or timespan to select the timespan of data\n");
     printf("Enter d or data to display data table\n");
     printf("--------------------------------------\n");
 }
@@ -440,6 +442,8 @@ void screen_help() {
     printf("  r or reset - Resets program back to original state\n");
     printf("  l or location - selects data location\n");
     printf("  g or graph - Prints out barchart of selected data\n");
+    printf("Enter t or time to select time\n");
+    printf("Enter span or timespan to select the timespan of data\n");
     printf("  d or data to display data table");
     printf("  \n");
     printf("  \n");
@@ -467,7 +471,7 @@ void screen_data(struct program_state *program_state) {
 }
 
 //TODO: Lot of repetition from screen_data, could shorten it by having a helper function
-void screen_graph(Location location_id, Measurement_type measurement) {
+void screen_graph(struct program_state *program_state) {
     char *filename = "none";
 
     for (int i = 0; i < sizeof (location_table) / sizeof (location_table[0]); i++) {
@@ -488,7 +492,7 @@ void screen_graph(Location location_id, Measurement_type measurement) {
     // TODO: Make date, area and Substance dynamic
     printf("Date: 17/10/2024 | Area: A.C.Meyers Vænge\n");
     printf("Substance: PM2.5\n");
-    draw_graph(10, location_data[program_state->current_measurement], 5.0, 3.0);
+    draw_graph(10, location_data[program_state->current_measurement], 10.0, 3.0);
 
     printf("\n\n--------------------------------------------\n");
 }
