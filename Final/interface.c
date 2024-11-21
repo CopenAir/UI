@@ -7,6 +7,7 @@
 
 // View the readme.md for a guide on how to add stuff in here
 
+
 #define RST_TERM "\033c"
 
 // Emums -------------------------------------------------------------
@@ -333,6 +334,7 @@ void command_graph(struct program_state *program_state) { //threshold value does
 }
 
 // promts the user for what date to change to, then converts the time string to unixtime and sets the current time to that
+//Time selection should show start and end date of available data to help the user (can just be hardcoded)
 void command_time(struct program_state *program_state, char* argument) {
     char input[32];
     time_t new_time;
@@ -371,6 +373,7 @@ void command_time(struct program_state *program_state, char* argument) {
     }
 }
 
+//Timespan should be a multiple choice (day, month, year (maybe week too)) instead of requiring user to select 2 dates (for simplicity for them, and us xD)
 void command_timespan(struct program_state *program_state) {
     char input[32], start_date_string[32];
     struct timespan timespan;
