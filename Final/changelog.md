@@ -50,4 +50,6 @@
   - unix_to_hour()
   - unix_to_date()
   - average()
--
+- Implemented dynamic y-axis size
+- Implemented dynamic x-axis size (slightly broken :D)
+- Implemented dynamic threshold values for graph

@@ -10,6 +10,9 @@
 
 
 #define RST_TERM "\033c"
+#define WHO_24HOUR_PM2_5 1.5
+#define WHO_24HOUR_PM10 4.5
+#define WHO_24HOUR_NO2 2.5
 
 // Emums -------------------------------------------------------------
 
@@ -498,6 +501,9 @@ void screen_graph(struct program_state *program_state) {
     char *location_to_print;
     char date[20];
     char *meassurement;
+    struct tm* time_info = localtime(&program_state->current_time);
+    strftime(date, 20, "%Y-%m-%d", time_info);
+    float threshold = 0.0;
 
     switch(program_state->current_location) {
         case FOLEHAVEN:
@@ -511,24 +517,37 @@ void screen_graph(struct program_state *program_state) {
             break;
     }
 
-    struct tm* time_info = localtime(&program_state->current_time);
-    strftime(date, 20, "%Y-%m-%d", time_info);
-
     switch(program_state->current_measurement) {
         case 1:
             meassurement = "P2.5";
+            threshold = WHO_24HOUR_PM2_5;
             break;
         case 2:
             meassurement = "P10";
+            threshold = WHO_24HOUR_PM10;
             break;
         case 3:
             meassurement = "NO2";
+            threshold = WHO_24HOUR_NO2;
             break;
     }
 
     printf("Date: %s | Area: %s\n", date, location_to_print);
     printf("Substance: %s\n", meassurement);
-    draw_graph(10, location_data[program_state->current_measurement], 10.0, 3.0);
+
+    float max_val = 0.0;
+    float x_size = 0.0;
+    for(int i = 0; i < MAX_ROWS; i++) {
+        if (location_data[program_state->current_measurement][i] > 0.0) {
+            x_size++;
+        }
+        if(location_data[program_state->current_measurement][i] > max_val) {
+            max_val = location_data[program_state->current_measurement][i];
+        }
+    }
+
+
+    draw_graph(x_size, location_data[program_state->current_measurement], max_val, threshold);
 
     printf("\n\n--------------------------------------------\n");
 }

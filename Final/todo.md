@@ -1,4 +1,3 @@
 - implement max of 365 in timespan, along with checks for data at given timespan (high priority)
-- graph function should have dynamic threshold (high)
 - fancy time sel (low priority)
 - make lib for string_to_unixtime (low)

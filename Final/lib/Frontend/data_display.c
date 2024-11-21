@@ -30,7 +30,7 @@ void draw_graph(int size, float *data, float max_val, float threshold) {
 
     printf("    ╚");
     for (int i = 0; i < size; i++) {
-        printf("════");
+        printf("%s", i<11 ? "════":"═════");
     }
     printf("\n     ");
     for (int i = 1; i <= size; printf("%d   ", i++));
