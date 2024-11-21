@@ -1,5 +1,4 @@
 #include <stdio.h>
-#include <time.h>
 
 // WHO guidelines for air pollution from 2021
 // https://www.who.int/news-room/feature-stories/detail/what-are-the-who-air-quality-guidelines

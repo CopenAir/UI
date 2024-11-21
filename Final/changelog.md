@@ -53,3 +53,5 @@
 - Implemented dynamic y-axis size
 - Implemented dynamic x-axis size (slightly broken :D)
 - Implemented dynamic threshold values for graph
+- Removed unneded importan "time.h" from data_display.c
+- Seperated all screen_graph_variables into seperate helper function

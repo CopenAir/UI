@@ -131,6 +131,7 @@ void screen_data(struct program_state *program_state);
 void screen_graph(struct program_state *program_state);
 
 // Helper functions
+void screen_graph_args(struct program_state *program_state, float location_data[5][8785], char **location_to_print, char *date, char **measurement, float *threshold, float *max_val, float *x_size);
 void clear_terminal();
 void clear_input();
 time_t string_to_unixtime(char *string);
@@ -498,54 +499,17 @@ void screen_graph(struct program_state *program_state) {
         return;
     }
 
-    char *location_to_print;
     char date[20];
-    char *meassurement;
-    struct tm* time_info = localtime(&program_state->current_time);
-    strftime(date, 20, "%Y-%m-%d", time_info);
+    char *location_to_print;
+    char *measurement;
     float threshold = 0.0;
-
-    switch(program_state->current_location) {
-        case FOLEHAVEN:
-            location_to_print = "Folehaven";
-            break;
-        case BACKERSVEJ:
-            location_to_print = "Backersvej";
-            break;
-        case HILLEROESGADE:
-            location_to_print = "Hillerødsgade";
-            break;
-    }
-
-    switch(program_state->current_measurement) {
-        case 1:
-            meassurement = "P2.5";
-            threshold = WHO_24HOUR_PM2_5;
-            break;
-        case 2:
-            meassurement = "P10";
-            threshold = WHO_24HOUR_PM10;
-            break;
-        case 3:
-            meassurement = "NO2";
-            threshold = WHO_24HOUR_NO2;
-            break;
-    }
-
-    printf("Date: %s | Area: %s\n", date, location_to_print);
-    printf("Substance: %s\n", meassurement);
-
     float max_val = 0.0;
     float x_size = 0.0;
-    for(int i = 0; i < MAX_ROWS; i++) {
-        if (location_data[program_state->current_measurement][i] > 0.0) {
-            x_size++;
-        }
-        if(location_data[program_state->current_measurement][i] > max_val) {
-            max_val = location_data[program_state->current_measurement][i];
-        }
-    }
 
+    screen_graph_args(program_state, location_data, &location_to_print, date, &measurement, &threshold, &max_val, &x_size);
+
+    printf("Date: %s | Area: %s\n", date, location_to_print);
+    printf("Substance: %s\n", measurement);
 
     draw_graph(x_size, location_data[program_state->current_measurement], max_val, threshold);
 
@@ -553,6 +517,47 @@ void screen_graph(struct program_state *program_state) {
 }
 
 // Helper functions ----------------------------------------
+
+void screen_graph_args(struct program_state *program_state, float location_data[5][8785], char **location_to_print, char *date, char **measurement, float *threshold, float *max_val, float *x_size){
+    struct tm* time_info = localtime(&program_state->current_time);
+    strftime(date, 20, "%Y-%m-%d", time_info);
+
+    switch(program_state->current_location) {
+        case FOLEHAVEN:
+            *location_to_print = "Folehaven";
+            break;
+        case BACKERSVEJ:
+            *location_to_print = "Backersvej";
+            break;
+        case HILLEROESGADE:
+            *location_to_print = "Hillerødsgade";
+            break;
+    }
+
+    switch(program_state->current_measurement) {
+        case 1:
+            *measurement = "P2.5";
+            *threshold = WHO_24HOUR_PM2_5;
+            break;
+        case 2:
+            *measurement = "P10";
+            *threshold = WHO_24HOUR_PM10;
+            break;
+        case 3:
+            *measurement = "NO2";
+            *threshold = WHO_24HOUR_NO2;
+            break;
+    }
+
+    for(int i = 0; i < MAX_ROWS; i++) {
+        if (location_data[program_state->current_measurement][i] > 0.0) {
+            *x_size += 1;
+        }
+        if(location_data[program_state->current_measurement][i] > *max_val) {
+            *max_val = location_data[program_state->current_measurement][i];
+        }
+    }
+}
 
 // Used to clear the terminal.
 void clear_terminal() {
