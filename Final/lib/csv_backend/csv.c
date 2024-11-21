@@ -2,16 +2,11 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#include "lib/custom_time/custom_time.h"
 
 #define MAX_LINE_LENGTH 1024
 #define MAX_COLUMNS 5
 #define MAX_ROWS 8785
-
-// TODO: we should probably have a header file with all the structs, but im just gonna put this here for now
-struct timespan {
-    time_t start_date;
-    time_t end_date;
-};
 
 int load_data(const char *filename, float data_matrix[][MAX_ROWS]) {
     const char *delimiter = ",";  // Delimiter as a string for strtok
@@ -66,17 +61,6 @@ int get_data_for_date(const char *filename, float data_array[], time_t date) {
     }
 
     return -1;  // Return -1 if date not found
-}
-
-// checks if a unixtime value is at midday. May be one hour behind (most likely cus of day light savings) but as its just for  the day it doesnt really matter
-int is_midday(time_t unixtime) {
-    struct tm *tm = localtime(&unixtime);
-
-    if (tm->tm_hour == 12) {
-        return 1;
-    }
-
-    return 0;
 }
 
 // Gets data from each day at midday within a timespan
