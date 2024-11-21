@@ -369,7 +369,7 @@ void command_time(struct program_state *program_state, char* argument) {
             break;
         }
 
-        printf("Please try again, this time actually using 'YYYY-MM-DD HH' (E.g '2024-05-02 11'): ");
+        printf("Please try again: ");
     }
 }
 
@@ -398,7 +398,7 @@ void command_timespan(struct program_state *program_state) {
 
         printf("\nSelecting timespan: xxxx-xx-xx - xxxx-xx-xx\n");
         printf("---------------------------------------------\n");
-        printf("Please try again, this time actually using 'YYYY-MM-DD' (E.g '2024-05-02'): ");
+        printf("Please try again: ");
     }
 
     printf("Selecting timespan: %s - xxxx-xx-xx\n", start_date_string);
@@ -418,7 +418,7 @@ void command_timespan(struct program_state *program_state) {
 
         printf("\nSelecting timespan: %s - xxxx-xx-xx\n", start_date_string);
         printf("---------------------------------------------\n");
-        printf("Please try again, this time actually using 'YYYY-MM-DD' (E.g '2024-05-02'): ");
+        printf("Please try again: ");
     }
 
     program_state->current_timespan = timespan;
@@ -523,6 +523,7 @@ time_t string_to_unixtime(char *string) {
     // reads the string input and stores the values in the corresponding variables
     if (sscanf(string, "%d-%d-%d %d", &year, &month, &day, &hour) != 4) {
         printf("Invalid Time format: %s\n", string);
+        printf("Format has to match 'YYYY-MM-DD HH' (E.g '2024-05-02 11')\n");
         return -1;
     }
 
@@ -535,9 +536,16 @@ time_t string_to_unixtime(char *string) {
 
     time_t unixtime = mktime(&tm);
     if (unixtime == -1) {
-        printf("Some error happened when converting string to unixtime: %s", string);
+        printf("Some error happened when converting string to unixtime: %s\n", string);
+        return -1;
+    }
+
+    if (unixtime < 1697313600 || unixtime > 1728932400) {
+        printf("Selected time outside of accepted range: %s\n", string);
+        printf("Time has to be between 2023-10-15 and 2024-10-13\n");
         return -1;
     }
 
     return unixtime;
 }
+
