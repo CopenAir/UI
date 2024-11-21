@@ -55,3 +55,4 @@
 - Implemented dynamic threshold values for graph
 - Removed unneded importan "time.h" from data_display.c
 - Seperated all screen_graph_variables into seperate helper function
+- Moved string_to_unixtime() to library custom_time.c
