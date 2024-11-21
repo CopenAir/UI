@@ -37,7 +37,7 @@
 - Fixed an issue where draw_graph() would be called twice (however only 1 graph would be shown)
 - removed redundant print statements
 
-21/11/24 @ 06:28
+21/11/24 @ 17:19
 -------------------
 - Updated welcome and help screen to accomodate for 4 new time commands
 - Fixed a declaration issue with screen_graph()
@@ -58,3 +58,5 @@
 - Moved string_to_unixtime() to library custom_time.c
 - Updated Makefile to include custom_time.c
 - Replaced special UNICODE characters in draw_graph() with standard ASCII characters
+- Added guided tutorial / example to screen_help to enhance user experience
+-

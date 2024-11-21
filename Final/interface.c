@@ -465,7 +465,13 @@ void screen_help() {
     printf("  span or timespan to select the timespan of data\n");
     printf("  d or data to display data table");
     printf("  \n");
-    printf("  \n");
+    printf("------------------------------------------------------\n");
+    printf("  Type l to select a location, and then choose one of the locations displayed on screen\n");
+    printf("  Once a selection has been made, this will automatically show you the data for the given location\n");
+    printf("  You can now type 't'/'time' to set a specific time or interval you wanna view the data for\n");
+    printf("  Finally you can display the data visually using 'g'/'graph'\n");
+    printf("  From any screen you can navigate to another. so from graph for example you can either select a different time, or go back to data\n");;
+    printf("------------------------------------------------------\n");
 }
 
 void screen_data(struct program_state *program_state) {
