@@ -19,19 +19,19 @@ void draw_graph(int size, float *data, float max_val, float threshold) {
         float i = step / 10.0;
 
         printf("%s", i >= 10.0 ? "" : " ");
-        printf("%s%.1f║", i <= threshold ? GREEN : RED, i);
+        printf("%s%.1f||", i <= threshold ? GREEN : RED, i);
 
         for (int j = 0; j < size; j++) {
-            printf("%s", data[j] >= i ? "███ " : "    ");
+            printf("%s", data[j] >= i ? "### " : "    ");
         }
         printf("\n%s", RESET_COLOUR);
     }
 
-    printf("    ╚");
+    printf("      ");
     for (int i = 0; i < size; i++) {
-        printf("%s", i<11 ? "════":"═════");
+        printf("%s", i<11 ? "====":"=====");
     }
-    printf("\n     ");
+    printf("\n      ");
     for (int i = 1; i <= size; printf("%d   ", i++));
 }
 

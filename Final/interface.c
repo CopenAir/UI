@@ -105,6 +105,14 @@ struct program_state {
     int running;
 };
 
+struct graph_args {
+    char date[20];
+    char *location_to_print;
+    char *measurement;
+    float threshold;
+    float max_val;
+    float x_size;
+};
 
 // Function Prototypes -------------------------------------------------------------
 
@@ -131,7 +139,7 @@ void screen_data(struct program_state *program_state);
 void screen_graph(struct program_state *program_state);
 
 // Helper functions
-void screen_graph_args(struct program_state *program_state, float location_data[5][8785], char **location_to_print, char *date, char **measurement, float *threshold, float *max_val, float *x_size);
+void screen_graph_args(struct program_state *program_state, struct graph_args *graph_args, float location_data[][MAX_ROWS]);
 void clear_terminal();
 void clear_input();
 
@@ -498,62 +506,64 @@ void screen_graph(struct program_state *program_state) {
         return;
     }
 
-    char date[20];
-    char *location_to_print;
-    char *measurement;
-    float threshold = 0.0;
-    float max_val = 0.0;
-    float x_size = 0.0;
+    struct graph_args graph_args = {
+        .date = "",
+        .location_to_print = NULL,
+        .measurement = NULL,
+        .threshold = 0.0,
+        .max_val = 0.0,
+        .x_size = 0.0
+    };
 
-    screen_graph_args(program_state, location_data, &location_to_print, date, &measurement, &threshold, &max_val, &x_size);
+    screen_graph_args(program_state, &graph_args, location_data);
 
-    printf("Date: %s | Area: %s\n", date, location_to_print);
-    printf("Substance: %s\n", measurement);
+    printf("Date: %s | Area: %s\n", graph_args.date, graph_args.location_to_print);
+    printf("Substance: %s\n", graph_args.measurement);
 
-    draw_graph(x_size, location_data[program_state->current_measurement], max_val, threshold);
+    draw_graph(graph_args.x_size, location_data[program_state->current_measurement], graph_args.max_val, graph_args.threshold);
 
     printf("\n\n--------------------------------------------\n");
 }
 
 // Helper functions ----------------------------------------
-
-void screen_graph_args(struct program_state *program_state, float location_data[5][8785], char **location_to_print, char *date, char **measurement, float *threshold, float *max_val, float *x_size){
+void screen_graph_args(struct program_state *program_state, struct graph_args *graph_args, float location_data[][MAX_ROWS]) {
     struct tm* time_info = localtime(&program_state->current_time);
-    strftime(date, 20, "%Y-%m-%d", time_info);
+    strftime(graph_args->date, 20, "%Y-%m-%d", time_info);
 
     switch(program_state->current_location) {
         case FOLEHAVEN:
-            *location_to_print = "Folehaven";
+            graph_args->location_to_print = "Folehaven";
             break;
         case BACKERSVEJ:
-            *location_to_print = "Backersvej";
+            graph_args->location_to_print = "Backersvej";
             break;
         case HILLEROESGADE:
-            *location_to_print = "Hillerødsgade";
+            graph_args->location_to_print = "Hillerødsgade";
             break;
     }
 
     switch(program_state->current_measurement) {
-        case 1:
-            *measurement = "P2.5";
-            *threshold = WHO_24HOUR_PM2_5;
+        case PM2_5:
+            graph_args->measurement = "P2.5";
+            graph_args->threshold = WHO_24HOUR_PM2_5;
             break;
-        case 2:
-            *measurement = "P10";
-            *threshold = WHO_24HOUR_PM10;
+        case PM10:
+            graph_args->measurement = "P10";
+            graph_args->threshold = WHO_24HOUR_PM10;
             break;
-        case 3:
-            *measurement = "NO2";
-            *threshold = WHO_24HOUR_NO2;
+        case NO2:
+            graph_args->measurement = "NO2";
+            graph_args->threshold = WHO_24HOUR_NO2;
             break;
     }
 
+    float (*data)[MAX_ROWS] = location_data;
     for(int i = 0; i < MAX_ROWS; i++) {
-        if (location_data[program_state->current_measurement][i] > 0.0) {
-            *x_size += 1;
+        if (data[program_state->current_measurement][i] > 0.0) {
+            graph_args->x_size += 1;
         }
-        if(location_data[program_state->current_measurement][i] > *max_val) {
-            *max_val = location_data[program_state->current_measurement][i];
+        if(data[program_state->current_measurement][i] > graph_args->max_val) {
+            graph_args->max_val = data[program_state->current_measurement][i];
         }
     }
 }

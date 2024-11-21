@@ -1,1 +1,2 @@
 - implement max of 365 in timespan, along with checks for data at given timespan (high priority)
+- DATA IS INCORECTLY TRIMMED MAKING draw_graph not function correctly with time and timespan
