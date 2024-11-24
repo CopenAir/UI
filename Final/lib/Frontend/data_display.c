@@ -11,7 +11,7 @@
 #define GREEN "\x1b[32m"
 #define RESET_COLOUR "\x1b[0m"
 
-void draw_graph(int size, float *data, float max_val, float threshold) {
+void draw_graph(int size, double *data, float max_val, float threshold) {
     int steps = (int)(max_val * 10);
 
     for (int step = steps; step >= 0; step--) {
@@ -35,14 +35,14 @@ void draw_graph(int size, float *data, float max_val, float threshold) {
 }
 
 // prints the rating in different color based on data and threshold
-void print_rating(float data, int threshold) {
+void print_rating(double data, int threshold) {
     if (data < threshold)
         printf("%s  within tolerances %s", GREEN, RESET_COLOUR);
     else
         printf("%s  outside tolerances %s", RED, RESET_COLOUR);
 }
 
-void print_data(float data[]) {
+void print_data(double data[]) {
     printf("---------------------------------------------\n");
     printf(" %-10s %-10s %-10s\n", "Substance", "Data", "Rating");
     printf("---------------------------------------------\n");

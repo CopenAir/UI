@@ -8,7 +8,7 @@
 #define MAX_COLUMNS 5
 #define MAX_ROWS 8785
 
-int load_data(const char *filename, float data_matrix[][MAX_ROWS]) {
+int load_data(const char *filename, double data_matrix[][MAX_ROWS]) {
     const char *delimiter = ",";  // Delimiter as a string for strtok
     FILE *data = fopen(filename, "r");
     if (data == NULL) {
@@ -29,7 +29,7 @@ int load_data(const char *filename, float data_matrix[][MAX_ROWS]) {
         char *value = strtok(line, delimiter);
         for (int col = 0; col < MAX_COLUMNS; col++) {
             if (value != NULL) {
-                data_matrix[col][row] = atof(value);
+                data_matrix[col][row] = strtod(value, NULL);
                 value = strtok(NULL, delimiter);
             } else {
                 data_matrix[col][row] = 0.0f;  // Set missing values to 0 for safety
@@ -43,15 +43,15 @@ int load_data(const char *filename, float data_matrix[][MAX_ROWS]) {
 }
 
 // gets the data for a specific date
-int get_data_for_date(const char *filename, float data_array[], time_t date) {
-    float location_data[MAX_COLUMNS][MAX_ROWS] = {0};  // Initialize to avoid uninitialized memory issues
+int get_data_for_date(const char *filename, double data_array[], time_t date) {
+    double location_data[MAX_COLUMNS][MAX_ROWS] = {0};  // Initialize to avoid uninitialized memory issues
 
     if (load_data(filename, location_data) == -1) {
         return -1;
     }
 
     for (int i = 0; i < MAX_ROWS; i++) {
-        if (location_data[0][i] == (float)date) {
+        if (location_data[0][i] == (double)date) {
             // Copy the row for the specified date
             for (int j = 0; j < MAX_COLUMNS; j++) {
                 data_array[j] = location_data[j][i];
@@ -65,8 +65,8 @@ int get_data_for_date(const char *filename, float data_array[], time_t date) {
 
 // Gets data from each day at midday within a timespan
 // TODO: Instead of just grapping the values on midday, we could get the average instead. I cant be bothered to do this rn tho
-int get_data_for_timespan(const char *filename, float data_matrix[MAX_COLUMNS][MAX_ROWS], struct timespan timespan) {
-    float location_data[MAX_COLUMNS][MAX_ROWS] = {0}; // Initialize to avoid uninitialized memory issues
+int get_data_for_timespan(const char *filename, double data_matrix[MAX_COLUMNS][MAX_ROWS], struct timespan timespan) {
+    double location_data[MAX_COLUMNS][MAX_ROWS] = {0}; // Initialize to avoid uninitialized memory issues
 
     if (load_data(filename, location_data) == -1) {
         return -1;
@@ -78,7 +78,7 @@ int get_data_for_timespan(const char *filename, float data_matrix[MAX_COLUMNS][M
     for (int i = 0; i < MAX_ROWS; i++) {
 
         // checks if the time of the current row is between the chosen start and end time
-        if (!(location_data[0][i] >= (float) timespan.start_date && location_data[0][i] <= (float) timespan.end_date)) {
+        if (!(location_data[0][i] >= (double) timespan.start_date && location_data[0][i] <= (double) timespan.end_date)) {
             continue;
         }
 

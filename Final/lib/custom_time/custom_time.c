@@ -2,6 +2,17 @@
 #include <stdio.h>
 #include <string.h>
 
+// checks if a unixtime value is at midday. May be one hour behind (most likely cus of day light savings) but as its just for  the day it doesnt really matter
+int is_midday(time_t unixtime) {
+    struct tm *tm = localtime(&unixtime);
+
+    if (tm->tm_hour == 12) {
+        return 1;
+    }
+
+    return 0;
+}
+
 // takes a string in the format "YYYY-MM-DD HH" and converts it to unixtime.
 // For some reason strptime isnt avaliable on Windows so we have to do our own thing
 time_t string_to_unixtime(char *string) {
@@ -34,15 +45,4 @@ time_t string_to_unixtime(char *string) {
     }
 
     return unixtime;
-}
-
-// checks if a unixtime value is at midday. May be one hour behind (most likely cus of day light savings) but as its just for  the day it doesnt really matter
-int is_midday(time_t unixtime) {
-    struct tm *tm = localtime(&unixtime);
-
-    if (tm->tm_hour == 12) {
-        return 1;
-    }
-
-    return 0;
 }

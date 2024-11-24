@@ -139,7 +139,7 @@ void screen_data(struct program_state *program_state);
 void screen_graph(struct program_state *program_state);
 
 // Helper functions
-void screen_graph_args(struct program_state *program_state, struct graph_args *graph_args, float location_data[][MAX_ROWS]);
+void screen_graph_args(struct program_state *program_state, struct graph_args *graph_args, double location_data[][MAX_ROWS]);
 void clear_terminal();
 void clear_input();
 
@@ -485,7 +485,7 @@ void screen_data(struct program_state *program_state) {
         }
     }
 
-    float data[5];
+    double data[5];
 
     if (get_data_for_date(filename, data, program_state->current_time) == -1) {
         printf("Couldnt load data for file: %s\n", filename);
@@ -505,7 +505,7 @@ void screen_graph(struct program_state *program_state) {
         }
     }
 
-    float location_data[MAX_COLUMNS][MAX_ROWS];
+    double location_data[MAX_COLUMNS][MAX_ROWS];
 
     if (get_data_for_timespan(filename, location_data, program_state->current_timespan) == -1) {
         printf("Couldnt load data for file: %s\n", filename);
@@ -532,7 +532,7 @@ void screen_graph(struct program_state *program_state) {
 }
 
 // Helper functions ----------------------------------------
-void screen_graph_args(struct program_state *program_state, struct graph_args *graph_args, float location_data[][MAX_ROWS]) {
+void screen_graph_args(struct program_state *program_state, struct graph_args *graph_args, double location_data[][MAX_ROWS]) {
     struct tm* time_info = localtime(&program_state->current_time);
     strftime(graph_args->date, 20, "%Y-%m-%d", time_info);
 
@@ -563,7 +563,7 @@ void screen_graph_args(struct program_state *program_state, struct graph_args *g
             break;
     }
 
-    float (*data)[MAX_ROWS] = location_data;
+    double (*data)[MAX_ROWS] = location_data;
     for(int i = 0; i < MAX_ROWS; i++) {
         if (data[program_state->current_measurement][i] > 0.0) {
             graph_args->x_size += 1;
