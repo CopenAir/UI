@@ -12,6 +12,7 @@
 #define WHO_24HOUR_PM2_5 1.5
 #define WHO_24HOUR_PM10 4.5
 #define WHO_24HOUR_NO2 2.5
+#define MAX_TIMESPAN 1728000 // set to 20 days
 
 // Emums -------------------------------------------------------------
 
@@ -415,26 +416,26 @@ void command_timespan(struct program_state *program_state) {
         printf("Enter end date in 'YYYY-MM-DD' format: ");
     }
 
-    printf("Data is available for dates between 2023-10-15 and 2024-10-13\n");
-    printf("Selecting timespan: %s - xxxx-xx-xx\n", start_date_string);
-    printf("---------------------------------------------\n");
-    printf("Enter end date in 'YYYY-MM-DD' format: ");
-
     while(1) {
+        printf("Data is available for dates between 2023-10-15 and 2024-10-13\n");
+        printf("Selecting timespan: %s - xxxx-xx-xx\n", start_date_string);
+        printf("---------------------------------------------\n");
+        printf("Enter end date in 'YYYY-MM-DD' format: ");
         fgets(input, sizeof(input), stdin);
         input[strcspn(input, "\n")] = '\0';
         strcat(input, " 00");
         clear_terminal();
 
         timespan.end_date = string_to_unixtime(input);
+
+        if (timespan.end_date - timespan.start_date > MAX_TIMESPAN) {
+            printf("Invalid Input: Timespan cannot exceed 20 days\n");
+            continue;
+        }
+
         if (timespan.end_date != -1) {
             break;
         }
-
-        printf("Data is available for dates between 2023-10-15 and 2024-10-13\n");
-        printf("Selecting timespan: %s - xxxx-xx-xx\n", start_date_string);
-        printf("---------------------------------------------\n");
-        printf("Enter end date in 'YYYY-MM-DD' format: ");
     }
 
     program_state->current_timespan = timespan;
