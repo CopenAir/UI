@@ -506,7 +506,7 @@ void screen_graph(struct program_state *program_state) {
         }
     }
 
-    double location_data[MAX_COLUMNS][MAX_ROWS];
+    double location_data[MAX_COLUMNS][MAX_ROWS] = {0};
 
     if (get_data_for_timespan(filename, location_data, program_state->current_timespan) == -1) {
         printf("Couldnt load data for file: %s\n", filename);
