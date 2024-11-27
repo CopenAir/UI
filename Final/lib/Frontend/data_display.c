@@ -25,13 +25,10 @@ void draw_graph(int size, double *data, float max_val, float threshold) {
         }
         printf("\n%s", RESET_COLOUR);
     }
-
     printf("      ");
-    for (int i = 0; i < size; i++) {
-        printf("%s", i<11 ? "====":"=====");
-    }
+    for (int i = 0; i < size; i++) {printf("%s", i<10 ? "====":"====");}
     printf("\n      ");
-    for (int i = 1; i <= size; printf("%d   ", i++));
+    for (int i = 1; i <= size; i++){printf("%d%s", i, i < 10 ? "   ":"  ");}
 }
 
 // prints the rating in different color based on data and threshold
