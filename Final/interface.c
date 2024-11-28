@@ -25,7 +25,8 @@ typedef enum {
     CMD_GRAPH,
     CMD_TIME,
     CMD_DATA,
-    CMD_TIMESPAN
+    CMD_TIMESPAN,
+    CMD_INFO
 } Command_id;
 
 // Enum for screen id's
@@ -34,6 +35,7 @@ typedef enum {
     SCREEN_HELP,
     SCREEN_DATA,
     SCREEN_GRAPH,
+    SCREEN_INFO
 } Screen;
 
 // Enum for locations
@@ -81,7 +83,9 @@ struct command_entry command_table[] = {
         {"t", CMD_TIME},
         {"span", CMD_TIMESPAN},
         {"timespan", CMD_TIMESPAN},
-        {"s", CMD_TIMESPAN}
+        {"s", CMD_TIMESPAN},
+        {"i", CMD_INFO},
+        {"info", CMD_INFO}
 };
 
 struct location_entry location_table[] = {
@@ -132,12 +136,14 @@ void command_graph(struct program_state *program_state);
 void command_data(struct program_state *program_state);
 void command_time(struct program_state *program_state, char* argument);
 void command_timespan(struct program_state *program_state);
+void command_info(struct program_state *program_state);
 
 // Screen functions
 void screen_help();
 void screen_main();
 void screen_data(struct program_state *program_state);
 void screen_graph(struct program_state *program_state);
+void screen_info();
 
 // Helper functions
 void screen_graph_args(struct program_state *program_state, struct graph_args *graph_args, double location_data[][MAX_ROWS]);
@@ -189,6 +195,9 @@ void display_screen(struct program_state program_state) {
             break;
         case SCREEN_GRAPH:
             screen_graph(&program_state);
+            break;
+        case SCREEN_INFO:
+            screen_info();
             break;
         default:
             printf("Error: Screen with id %i does not exist", program_state.current_screen);
@@ -268,6 +277,9 @@ void execute_command(struct entered_command entered_command, struct program_stat
             break;
         case CMD_TIMESPAN:
             command_timespan(program_state);
+            break;
+        case CMD_INFO:
+            command_info(program_state);
             break;
         default:
             printf("Error: No command found with ID: %i\n", entered_command.command_id);
@@ -441,6 +453,11 @@ void command_timespan(struct program_state *program_state) {
     program_state->current_timespan = timespan;
 }
 
+void command_info(struct program_state *program_state){
+    program_state->current_screen = SCREEN_INFO;
+}
+
+
 // Screens -----------------------------------------------------------------
 
 void screen_main() {
@@ -452,6 +469,7 @@ void screen_main() {
     printf("Enter t or time to select time\n");
     printf("Enter span or timespan to select the timespan of data\n");
     printf("Enter d or data to display data table\n");
+    printf("Enter i or info to list several facts about this program\n");
     printf("--------------------------------------\n");
 }
 
@@ -465,6 +483,7 @@ void screen_help() {
     printf("  t or time to select time\n");
     printf("  span or timespan to select the timespan of data\n");
     printf("  d or data to display data table");
+    printf("  i or info to list several facts about this program\n");
     printf("  \n");
     printf("------------------------------------------------------\n");
     printf("  Type l to select a location, and then choose one of the locations displayed on screen\n");
@@ -573,6 +592,18 @@ void screen_graph_args(struct program_state *program_state, struct graph_args *g
             graph_args->max_val = data[program_state->current_measurement][i];
         }
     }
+}
+
+void screen_info() {
+    printf("Default values:\n");
+    printf("    Time: 2024-10-14\n");
+    printf("    Location: Folehaven\n");
+    printf("    Substance: PM2.5\n");
+    printf("    Timespan: 2024-10-03 -> 2024-10-13\n");
+    printf("--------------------------------------\n");
+    printf("\n");
+    printf("Thresholds:\n");
+    printf("    All threshold values are derived from WHO's database\n");
 }
 
 // Used to clear the terminal.
