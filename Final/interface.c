@@ -603,7 +603,7 @@ void screen_info() {
     printf("--------------------------------------\n");
     printf("\n");
     printf("Thresholds:\n");
-    printf("    All threshold values are derived from WHO's database\n");
+    printf("    All threshold values are derived from WHO's database\n\n");
 }
 
 // Used to clear the terminal.
