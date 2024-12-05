@@ -12,10 +12,24 @@
 #define RESET_COLOUR "\x1b[0m"
 
 void draw_graph(int size, double *data, float max_val, float threshold) {
-    int steps = (int)(max_val * 10);
+    int steps;
+    float stepVal = 0.1f;
+    
+    // Dynamic step value
+    if (max_val > 30) {
+        stepVal = 2.0f;
+    } else if (max_val > 15) {
+        stepVal = 1.0f;
+    } else if (max_val > 7.5) {
+        stepVal = 0.5f;
+    } else if (max_val > 3) {
+        stepVal = 0.2f;
+    }
+
+    steps = (max_val / stepVal) + 1;
 
     for (int step = steps; step >= 0; step--) {
-        float i = step / 10.0;
+        float i = step * stepVal;
 
         printf("%s", i >= 10.0 ? "" : " ");
         printf("%s%.1f||", i <= threshold ? GREEN : RED, i);
@@ -26,9 +40,9 @@ void draw_graph(int size, double *data, float max_val, float threshold) {
         printf("\n%s", RESET_COLOUR);
     }
     printf("      ");
-    for (int i = 0; i < size; i++) {printf("%s", i<10 ? "====":"====");}
+    for (int i = 0; i < size; i++) {printf("====");}
     printf("\n      ");
-    for (int i = 1; i <= size; i++){printf("%d%s", i, i < 10 ? "   ":"  ");}
+    for (int i = 1; i <= size; i++) {printf("%2d  ", i);}
 }
 
 // prints the rating in different color based on data and threshold
