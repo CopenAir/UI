@@ -66,7 +66,8 @@ Maps locations to their corresponding CSV file paths.
 struct location_entry {
     char* filename;
     Location location_id;
-};```
+};
+```
 
 **entered_command**
 
@@ -89,7 +90,8 @@ struct program_state {
     Measurement_type current_measurement;
     struct timespan current_timespan;
     int running; // Program status: 1 = running, 0 = stopped
-};```
+};
+```
 
 **graph_args**
 
@@ -102,7 +104,8 @@ struct graph_args {
     float threshold;
     float max_val;
     float x_size;
-};```
+};
+```
 
 ## Functions
 ### Main Functions
