@@ -14,7 +14,8 @@
 void draw_graph(int size, double *data, float max_val, float threshold) {
     int steps;
     float stepVal = 0.1f;
-    
+    printf("µg/m³\n");
+
     // Dynamic step value
     if (max_val > 30) {
         stepVal = 2.0f;
@@ -41,8 +42,9 @@ void draw_graph(int size, double *data, float max_val, float threshold) {
     }
     printf("      ");
     for (int i = 0; i < size; i++) {printf("====");}
-    printf("\n      ");
+    printf("\n       ");
     for (int i = 1; i <= size; i++) {printf("%2d  ", i);}
+    printf("date");
 }
 
 // prints the rating in different color based on data and threshold

@@ -81,7 +81,6 @@ struct command_entry command_table[] = {
         {"d", CMD_DATA},
         {"time", CMD_TIME},
         {"t", CMD_TIME},
-        {"span", CMD_TIMESPAN},
         {"timespan", CMD_TIMESPAN},
         {"s", CMD_TIMESPAN},
         {"i", CMD_INFO},
@@ -467,7 +466,7 @@ void screen_main() {
     printf("Enter l or location to select location\n");
     printf("Enter g or graph to create a barchart of selected data\n");
     printf("Enter t or time to select time\n");
-    printf("Enter span or timespan to select the timespan of data\n");
+    printf("Enter s or timespan to select the timespan of data\n");
     printf("Enter d or data to display data table\n");
     printf("Enter i or info to list several facts about this program\n");
     printf("--------------------------------------\n");
@@ -481,7 +480,7 @@ void screen_help() {
     printf("  l or location - selects data location\n");
     printf("  g or graph - Prints out barchart of selected data\n");
     printf("  t or time to select time\n");
-    printf("  span or timespan to select the timespan of data\n");
+    printf("  s or timespan to select the timespan of data\n");
     printf("  d or data to display data table");
     printf("  i or info to list several facts about this program\n");
     printf("  \n");
@@ -545,6 +544,7 @@ void screen_graph(struct program_state *program_state) {
 
     printf("Date: %s | Area: %s\n", graph_args.date, graph_args.location_to_print);
     printf("Substance: %s\n", graph_args.measurement);
+    printf("NOTICE: The graph is not a 100% accurate depiction of the data\n\n");
 
     draw_graph(graph_args.x_size, location_data[program_state->current_measurement], graph_args.max_val, graph_args.threshold);
 
@@ -570,11 +570,11 @@ void screen_graph_args(struct program_state *program_state, struct graph_args *g
 
     switch(program_state->current_measurement) {
         case PM2_5:
-            graph_args->measurement = "P2.5";
+            graph_args->measurement = "PM2.5";
             graph_args->threshold = WHO_24HOUR_PM2_5;
             break;
         case PM10:
-            graph_args->measurement = "P10";
+            graph_args->measurement = "PM10";
             graph_args->threshold = WHO_24HOUR_PM10;
             break;
         case NO2:

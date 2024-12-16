@@ -59,4 +59,12 @@
 - Updated Makefile to include custom_time.c
 - Replaced special UNICODE characters in draw_graph() with standard ASCII characters
 - Added guided tutorial / example to screen_help to enhance user experience
--
+
+16/12/24 @ 09:50
+-------------------
+- Added dynamic scalling of graph
+- Added notice to inform user of graphing inprecisions introduced by dynamic scalling
+- Added missing units and tittles on graph
+- Corrected several mistakes resulting in "PM2.5" and "PM10" occasionally being showed as "P2.5" and "P10"
+- Removed "span" command
+- Updated home and help to reflect the remvoed span, and use "s"(vim) instead:
